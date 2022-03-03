@@ -1,5 +1,7 @@
 # recommendations
 
+[![Build Status](https://github.com/DevOps-Spring-2022-Recommendations/recommendations/actions/workflows/workflow.yml/badge.svg)](DevOps-Spring-2022-Recommendations/recommendations/actions)
+
 The recommendations resource is a representation a product recommendation based on
 another product. In essence it is just a relationship between two products that "go
 together" (e.g., radio and batteries, printers and ink, shirts and pants, etc.). It could also
