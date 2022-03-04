@@ -41,7 +41,7 @@ def index():
 @app.route("/recommendations", methods=["GET"])
 def get_similar_products():
     """Returns all of the recommendation"""
-    app.logger.info("Request for recommendation for category")
+    app.logger.info("Request for recommendation for product category")
     pets = []
     category = request.args.get("category")
     name = request.args.get("name")
