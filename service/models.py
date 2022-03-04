@@ -118,6 +118,7 @@ class ProductModel(db.Model):
     
     @classmethod
     def find_products_of_same_category(cls, name: str):
+        return None
         category = cls.query.filter(cls.name == name).first().category()
         return cls.query.filter(cls.category == category)
 

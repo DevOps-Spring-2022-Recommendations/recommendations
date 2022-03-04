@@ -9,6 +9,7 @@ import os
 from service.models import ProductModel, DataValidationError, db
 from service import app
 from werkzeug.exceptions import NotFound
+from tests.factories import ProductFactory
 
 DATABASE_URI = os.getenv(
     "DATABASE_URI", "postgresql://postgres:postgres@localhost:5432/testdb"
@@ -136,20 +137,19 @@ class TestYourResourceModel(unittest.TestCase):
         product = ProductModel()
         self.assertRaises(DataValidationError, product.deserialize, data)
 
-    # def test_find_product(self):
-    #     """Find a item by ID"""
-    #     products = productFactory.create_batch(3)
-    #     for product in products:
-    #         product.create()
-    #     logging.debug(products)
-    #     # make sure they got saved
-    #     self.assertEqual(len(product.all()), 3)
-    #     # find the 2nd product in the list
-    #     product = product.find(products[1].id)
-    #     self.assertIsNot(product, None)
-    #     self.assertEqual(product.id, products[1].id)
-    #     self.assertEqual(product.name, products[1].name)
-    #     self.assertEqual(product.available, products[1].available)
+    def test_find_product(self):
+        """Find a item by ID"""
+        products = ProductFactory.create_batch(3)
+        for product in products:
+            product.create()
+        logging.debug(products)
+        # make sure they got saved
+        self.assertEqual(len(product.all()), 3)
+        # find the 2nd product in the list
+        product = product.find(products[1].id)
+        self.assertIsNot(product, None)
+        self.assertEqual(product.id, products[1].id)
+        self.assertEqual(product.name, products[1].name)
 
     def test_find_by_category(self):
         """Find items by Category"""
@@ -170,6 +170,14 @@ class TestYourResourceModel(unittest.TestCase):
         products = product.find_by_name("Mac")
         self.assertEqual(products[0].category, "Laptop")
         self.assertEqual(products[0].name, "Mac")
+    
+    def test_find_products_of_same_category(self):
+        product = ProductModel(name="IPhone", category="phone")
+        product.create()
+        product = ProductModel(name="Pixel", category="phone")
+        product.create()        
+        product = product.find_products_of_same_category("Iphone")
+        self.assertIsNone(product)
         
     # def test_find_by_availability(self):
     #     """Find items by Availability"""
