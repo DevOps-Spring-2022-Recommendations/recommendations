@@ -90,7 +90,7 @@ def update_products(item_id):
     check_content_type("application/json")
     product = ProductModel.find(item_id)
     if not product:
-        raise NotFound("product with id '{}' was not found.".format(item_id))
+        raise NotFound("Product with id '{}' was not found.".format(item_id))
     product.deserialize(request.get_json())
     product.id = item_id
     product.update()
