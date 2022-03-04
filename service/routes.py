@@ -106,7 +106,7 @@ def delete_pets(item_id):
     if product:
         product.delete()
 
-    app.logger.info("product with ID [%s] delete complete.", item_id)
+    app.logger.info("Product with ID [%s] delete complete.", item_id)
     return make_response("", status.HTTP_204_NO_CONTENT)
 
 
