@@ -137,36 +137,13 @@ class TestRecommendationModel(unittest.TestCase):
         self.assertEqual(recommendation.id, 1)
         recommendations = Recommendation.all()
         self.assertEqual(len(recommendations), 1)
+   
 
-    def test_find_recommendation(self):
-        """Find a Recommendation by ID"""
-        recommendations = RecommendationFactory.create_batch(3)
-        for recommendation in recommendations:
-            recommendation.create()
-        logging.debug(recommendations)
-        # make sure they got saved
+   def test_find_product(self):
+        """Find some or all items"""
+        products = RecommendationFactory.create_batch(3)
+        for product in products:
+            product.create()
+        logging.debug(products)
+        # make sure they got saved and able to be selected
         self.assertEqual(len(Recommendation.all()), 3)
-        # find the 2nd recommendation in the list
-        recommendation = Recommendation.find(recommendations[1].id)
-        self.assertIsNot(recommendation, None)
-        self.assertEqual(recommendation.id, recommendations[1].id)
-        self.assertEqual(recommendation.src_product_id, recommendations[1].src_product_id)
-        self.assertEqual(recommendation.src_product_id, recommendations[1].src_product_id)
-        self.assertEqual(recommendation.type, recommendations[1].type)
-
-    def test_find_or_404_found(self):
-        """Find or return 404 found"""
-        recommendations = RecommendationFactory.create_batch(3)
-        for recommendation in recommendations:
-            recommendation.create()
-
-        recommendation = Recommendation.find_or_404(recommendations[1].id)
-        self.assertIsNot(recommendation, None)
-        self.assertEqual(recommendation.id, recommendations[1].id)
-        self.assertEqual(recommendation.src_product_id, recommendations[1].src_product_id)
-        self.assertEqual(recommendation.rec_product_id, recommendations[1].rec_product_id)
-        self.assertEqual(recommendation.type, recommendations[1].type)
-
-    def test_find_or_404_not_found(self):
-        """Find or return 404 NOT found"""
-        self.assertRaises(NotFound, Recommendation.find_or_404, 0)
