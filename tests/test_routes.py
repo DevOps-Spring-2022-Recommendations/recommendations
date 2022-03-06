@@ -124,3 +124,11 @@ class TestRecommendationServer(TestCase):
         """Create a recommendation with no content type"""
         resp = self.app.post(BASE_URL)
         self.assertEqual(resp.status_code, status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
+    
+   def test_get_products_list(self):
+        """Get a list of items"""
+        self._create_recommendations(5)
+        resp = self.app.get(BASE_URL)
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        data = resp.get_json()
+        self.assertEqual(len(data), 5)
