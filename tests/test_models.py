@@ -137,6 +137,7 @@ class TestRecommendationModel(unittest.TestCase):
         self.assertEqual(recommendation.id, 1)
         recommendations = Recommendation.all()
         self.assertEqual(len(recommendations), 1)
+        
     def test_find_all(self):
         """Find some or all items"""
         products = RecommendationFactory.create_batch(3)
