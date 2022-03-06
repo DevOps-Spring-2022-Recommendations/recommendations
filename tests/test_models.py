@@ -121,3 +121,13 @@ class TestRecommendationModel(unittest.TestCase):
         # delete the  recommendation and make sure it isn't in the database
         recommendation.delete()
         self.assertEqual(len( recommendation.all()), 0)    
+
+    def test_find_product(self):
+        """Find some or all items"""
+        products = RecommendationFactory.create_batch(3)
+        for product in products:
+            product.create()
+        logging.debug(products)
+        # make sure they got saved and able to be selected
+        self.assertEqual(len(Recommendation.all()), 3)
+  
