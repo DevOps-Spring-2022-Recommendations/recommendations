@@ -32,9 +32,13 @@ def index():
 ######################################################################
 
 @app.route("/recommendations", methods=["GET"])
-def list_recommendations():
-    pass
-
+def get_recommendation():
+    filter=None
+    if(filter==None):
+        products = Recommendation.all()
+    results = [Recommendation.serialize() for product in products]
+    app.logger.info("Returning %d products", len(results))
+    return make_response("items returned", status.HTTP_200_OK)
 ######################################################################
 # RETRIEVE A RECOMMENDATION BY ID
 ######################################################################
