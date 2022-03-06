@@ -11,8 +11,8 @@ features and price.) You should use enumerations to represent the different reco
 types.    
 
 ## Available Calls
-/recommendations: GET
-/recommendations: POST
-/recommendations/<int:id>: GET
-/recommendations/<int:id>: PUT
-/recommendations/<int:id>: DELETE
+/recommendations: GET \
+/recommendations: POST \
+/recommendations/\<int:id>: GET \
+/recommendations/\<int:id>: PUT \
+/recommendations/\<int:id>: DELETE
