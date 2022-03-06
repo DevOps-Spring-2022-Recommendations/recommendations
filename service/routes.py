@@ -30,13 +30,27 @@ def index():
 ######################################################################
 
 @app.route("/recommendations", methods=["GET"])
-def get_recommendation():
-    filter=None
-    if(filter==None):
-        products = Recommendation.all()
-    results = [Recommendation.serialize() for product in products]
+def list_recommendations():
+    #filter for future usage
+    # filter=None
+    # if(filter==None):
+    products = Recommendation.all()
+    results = [product.serialize() for product in products]
     app.logger.info("Returning %d products", len(results))
-    return make_response("items returned", status.HTTP_200_OK)
+    return make_response(jsonify(results), status.HTTP_200_OK)
+    """Returns all of the recommendation"""
+    app.logger.info("Request for recommendation for category")
+    # category = request.args.get("category")
+    # name = request.args.get("name")
+    # price = request.args.get("price")
+    # if category:
+    #     products = Recommendation.find_by_category(category)
+    # elif name:
+    #     products = Recommendation.find_products_of_same_category(name)
+    # elif price:
+    #     products = Recommendation.find_highest_price_product_by_category(category)
+    # else:
+
 
 ######################################################################
 # RETRIEVE A RECOMMENDATION BY ID
