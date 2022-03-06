@@ -95,11 +95,13 @@ class Recommendation(db.Model):
                 "Invalid recommendation: body of request contained bad or no data " + str(error)
             )
         return self
+    
     @classmethod
     def all(cls) -> list:
         """ Returns all of the Products in the database """
         logger.info("Processing all Products")
         return cls.query.all()
+    
     @classmethod
     def find(cls, id: int):
         """Finds a Recommendation by it's ID
