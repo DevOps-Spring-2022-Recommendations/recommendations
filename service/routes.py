@@ -31,9 +31,6 @@ def index():
 
 @app.route("/recommendations", methods=["GET"])
 def list_recommendations():
-    #filter for future usage
-    # filter=None
-    # if(filter==None):
     products = Recommendation.all()
     results = [product.serialize() for product in products]
     app.logger.info("Returning %d products", len(results))
