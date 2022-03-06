@@ -135,3 +135,8 @@ class Recommendation(db.Model):
         db.init_app(app)
         app.app_context().push()
         db.create_all()  # make our sqlalchemy tables
+        
+    def all(cls) -> list:
+        """ Returns all of the Products in the database """
+        logger.info("Processing all Products")
+        return cls.query.all()
