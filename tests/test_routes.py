@@ -127,3 +127,11 @@ class TestRecommendationServer(TestCase):
             "{0}/{1}".format(BASE_URL, test_recommendation.id), content_type=CONTENT_TYPE_JSON
         )
         self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
+    
+    def test_get_products_list(self):
+        """Get a list of items"""
+        self._create_recommendations(5)
+        resp = self.app.get(BASE_URL)
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        data = resp.get_json()
+        self.assertEqual(len(data), 5)
