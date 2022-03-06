@@ -36,7 +36,7 @@ def list_recommendations():
     app.logger.info("Returning %d products", len(results))
     return make_response(jsonify(results), status.HTTP_200_OK)
     """Returns all of the recommendation"""
-    app.logger.info("Request for recommendation for category")
+    #app.logger.info("Request for recommendation for category")
     # category = request.args.get("category")
     # name = request.args.get("name")
     # price = request.args.get("price")
