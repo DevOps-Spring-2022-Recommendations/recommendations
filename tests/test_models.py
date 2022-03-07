@@ -118,7 +118,7 @@ class TestRecommendationModel(unittest.TestCase):
 
     def test_create_a_recommendation(self):
         """Create a Recommendation and assert that it exists"""
-        recommendation = Recommendation(id=1, src_product_id=100, rec_product_id=200, type= "UP_SELL")
+        recommendation = Recommendation(id=1, src_product_id=100, rec_product_id=200, type="UP_SELL")
         self.assertIsNot(recommendation, None)
         self.assertEqual(recommendation.id, 1)
         self.assertEqual(recommendation.src_product_id, 100)
@@ -129,7 +129,7 @@ class TestRecommendationModel(unittest.TestCase):
         """Create a Recommendation and add it to the database"""
         recommendations = Recommendation.all()
         self.assertEqual(recommendations, [])
-        recommendation = Recommendation(id=1, src_product_id=100, rec_product_id=200, type= "UP_SELL")
+        recommendation = Recommendation(id=1, src_product_id=100, rec_product_id=200, type="UP_SELL")
         self.assertTrue(recommendation != None)
         self.assertEqual(recommendation.id, 1)
         recommendation.create()
@@ -140,12 +140,12 @@ class TestRecommendationModel(unittest.TestCase):
 
     def test_update_a_recommendation(self):
         """Update an recommendation"""
-        recommendation = Recommendation(id=1, src_product_id=100, rec_product_id = 200, type= "UP_SELL")
+        recommendation = Recommendation(id=1, src_product_id=100, rec_product_id=200, type="UP_SELL")
         self.assertIsNot(recommendation, None)
         self.assertEqual(recommendation.id, 1)
         recommendation.create()
         # Change it an save it
-        recommendation.rec_product_id= 400
+        recommendation.rec_product_id = 400
         original_id = recommendation.id
         recommendation.update()
         self.assertEqual(recommendation.id, original_id)
@@ -156,20 +156,16 @@ class TestRecommendationModel(unittest.TestCase):
         self.assertEqual(len(recommendations), 1)
         self.assertEqual(recommendations[0].src_product_id, 100)
         self.assertEqual(recommendations[0].rec_product_id, 400)
-        self.assertEqual(recommendations[0].type, "UP_SELL")
+        self.assertEqual(recommendations[0].type.name, "UP_SELL")
 
     def test_update_a_recommendation_validation_error(self):
         """Update a item Validation Error"""
-        recommendation = Recommendation(id=1, src_product_id=100, rec_product_id = 200, type= "UP_SELL")
-        self.assertRaises(DataValidationError, recommendation.update)
-        recommendation = Recommendation(src_product_id=100, rec_product_id = 200, type= "UP_SELL")
-        self.assertRaises(DataValidationError, recommendation.update)
-        recommendation = Recommendation(id=1, src_product_id=100, rec_product_id = 200, type= "UP_SELL")
+        recommendation = Recommendation(src_product_id=100, rec_product_id=200, type="UP_SELL")
         self.assertRaises(DataValidationError, recommendation.update)
 
     def test_delete_a_recommendation(self):
         """Delete a item"""
-        recommendation = Recommendation(id=1, src_product_id=100, rec_product_id=200, type= "UP_SELL")
+        recommendation = Recommendation(id=1, src_product_id=100, rec_product_id=200, type="UP_SELL")
         recommendation.create()
         self.assertEqual(len(recommendation.all()), 1)
         # delete the  recommendation and make sure it isn't in the database

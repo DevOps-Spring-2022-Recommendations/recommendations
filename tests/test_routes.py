@@ -127,7 +127,7 @@ class TestRecommendationServer(TestCase):
 
     def test_update_recommendation(self):
         """Update an existing item"""
-        # create a recommendatio to update
+        # create a recommendation to update
         test_recommendation = RecommendationFactory()
         resp = self.app.post(
             BASE_URL, json=test_recommendation.serialize(), content_type=CONTENT_TYPE_JSON
