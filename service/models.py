@@ -54,7 +54,15 @@ class Recommendation(db.Model):
         self.id = None  # id must be none to generate next primary key
         db.session.add(self)
         db.session.commit()
-        
+
+    def update(self):
+        """
+        Updates a Recommendation to the database
+        """
+        logger.info("Saving %s", self.id)
+        if not self.id:
+            raise DataValidationError("Update called with empty ID field")
+
     def delete(self):
         """
         Removes a Recommendation from the database

@@ -138,6 +138,35 @@ class TestRecommendationModel(unittest.TestCase):
         recommendations = Recommendation.all()
         self.assertEqual(len(recommendations), 1)
 
+    def test_update_a_recommendation(self):
+        """Update an recommendation"""
+        recommendation = Recommendation(id=1, src_product_id=100, rec_product_id = 200, type= "UP_SELL")
+        self.assertIsNot(recommendation, None)
+        self.assertEqual(recommendation.id, 1)
+        recommendation.create()
+        # Change it an save it
+        recommendation.rec_product_id= 400
+        original_id = recommendation.id
+        recommendation.update()
+        self.assertEqual(recommendation.id, original_id)
+        self.assertEqual(recommendation.rec_product_id, 400)
+        # Fetch it back and make sure the id hasn't changed
+        # but the data did change
+        recommendations = Recommendation.all()
+        self.assertEqual(len(recommendations), 1)
+        self.assertEqual(recommendations[0].src_product_id, 100)
+        self.assertEqual(recommendations[0].rec_product_id, 400)
+        self.assertEqual(recommendations[0].type, "UP_SELL")
+
+    def test_update_a_recommendation_validation_error(self):
+        """Update a item Validation Error"""
+        recommendation = Recommendation(id=1, src_product_id=100, rec_product_id = 200, type= "UP_SELL")
+        self.assertRaises(DataValidationError, recommendation.update)
+        recommendation = Recommendation(src_product_id=100, rec_product_id = 200, type= "UP_SELL")
+        self.assertRaises(DataValidationError, recommendation.update)
+        recommendation = Recommendation(id=1, src_product_id=100, rec_product_id = 200, type= "UP_SELL")
+        self.assertRaises(DataValidationError, recommendation.update)
+
     def test_delete_a_recommendation(self):
         """Delete a item"""
         recommendation = Recommendation(id=1, src_product_id=100, rec_product_id=200, type= "UP_SELL")
