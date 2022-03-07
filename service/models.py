@@ -42,6 +42,10 @@ class Recommendation(db.Model):
         db.Enum(Type), nullable=False, server_default=(Type.CROSS_SELL.name)
     )
 
+    def __repr__(self):
+        return "<Recommendation id=[%s], src_product_id=[%s], rec_product_id=[%s], type=[%s]>" % \
+            (self.id, self.src_product_id, self.rec_product_id, self.type.name)
+
     def create(self):
         """
         Creates a Recommendation to the database
@@ -51,24 +55,13 @@ class Recommendation(db.Model):
         db.session.add(self)
         db.session.commit()
         
-     def update(self):
+    def update(self):
         """
         Updates a Recommendation to the database
         """
-        logger.info("Saving %s", self.name)
+        logger.info("Saving %s", self.id)
         if not self.id:
             raise DataValidationError("Update called with empty ID field")
-        if type(self.id) is not int:
-            raise DataValidationError("Update called with non-integer ID field")
-        if not self.src_product_id:
-            raise DataValidationError("Update called with empty source ID")
-        if not self.rec_product_id:
-            raise DataValidationError("Update called with empty recommended product ID")
-    
-
-    def __repr__(self):
-        return "<Recommendation id=[%s], src_product_id=[%s], rec_product_id=[%s], type=[%s]>" % \
-            (self.id, self.src_product_id, self.rec_product_id, self.type.name)
 
     def serialize(self) -> dict:
         """Serializes a Recommendation into a dictionary"""
