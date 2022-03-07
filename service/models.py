@@ -54,7 +54,7 @@ class Recommendation(db.Model):
         self.id = None  # id must be none to generate next primary key
         db.session.add(self)
         db.session.commit()
-        
+
     def update(self):
         """
         Updates a Recommendation to the database
@@ -62,6 +62,14 @@ class Recommendation(db.Model):
         logger.info("Saving %s", self.id)
         if not self.id:
             raise DataValidationError("Update called with empty ID field")
+
+    def delete(self):
+        """
+        Removes a Recommendation from the database
+        """
+        logger.info("Deleting %s", self.id)
+        db.session.delete(self)
+        db.session.commit()
 
     def serialize(self) -> dict:
         """Serializes a Recommendation into a dictionary"""
@@ -79,8 +87,20 @@ class Recommendation(db.Model):
             data (dict): A dictionary containing the Recommendation data
         """
         try:
-            self.src_product_id = data["src_product_id"]
-            self.rec_product_id = data["rec_product_id"]
+            if isinstance(data["src_product_id"], int):
+                self.src_product_id = data["src_product_id"]
+            else:
+                raise DataValidationError(
+                    "Invalid type for int [src_product_id]: "
+                    + str(type(data["src_product_id"]))
+                )
+            if isinstance(data["rec_product_id"], int):
+                self.rec_product_id = data["rec_product_id"]
+            else:
+                raise DataValidationError(
+                    "Invalid type for int [rec_product_id]: "
+                    + str(type(data["rec_product_id"]))
+                )
             self.type = getattr(Type, data["type"])  # create enum from string
         except AttributeError as error:
             raise DataValidationError("Invalid attribute: " + error.args[0])
@@ -91,6 +111,40 @@ class Recommendation(db.Model):
                 "Invalid recommendation: body of request contained bad or no data " + str(error)
             )
         return self
+    
+    @classmethod
+    def all(cls) -> list:
+        """ Returns all of the Products in the database """
+        logger.info("Processing all Products")
+        return cls.query.all()
+    
+    @classmethod
+    def find(cls, id: int):
+        """Finds a Recommendation by it's ID
+
+        :param id: the id of the Recommendation to find
+        :type id: int
+
+        :return: an instance with the id, or None if not found
+        :rtype: Recommendation
+
+        """
+        logger.info("Processing lookup for id %s ...", id)
+        return cls.query.get(id)
+
+    @classmethod
+    def find_or_404(cls, id: int):
+        """Find a Recommendation by it's id
+
+        :param id: the id of the Recommendation to find
+        :type id: int
+
+        :return: an instance with the id, or 404_NOT_FOUND if not found
+        :rtype: Recommendation
+
+        """
+        logger.info("Processing lookup or 404 for id %s ...", id)
+        return cls.query.get_or_404(id)
 
     @classmethod
     def init_db(cls, app: Flask):
@@ -103,5 +157,3 @@ class Recommendation(db.Model):
         db.init_app(app)
         app.app_context().push()
         db.create_all()  # make our sqlalchemy tables
-
-
