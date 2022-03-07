@@ -116,7 +116,7 @@ class TestRecommendationServer(TestCase):
         
     def test_delete_recommendation(self):
         """Delete a item"""
-        test_recommendation = self._create_recommendation(1)[0]
+        test_recommendation = self._create_recommendations(1)[0]
         resp = self.app.delete(
             "{0}/{1}".format(BASE_URL, test_recommendation.id), content_type=CONTENT_TYPE_JSON
         )
