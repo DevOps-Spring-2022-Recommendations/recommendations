@@ -114,7 +114,7 @@ class TestRecommendationModel(unittest.TestCase):
         self.assertEqual(len(recommendations), 1)
         
     def test_update_a_recommendation(self):
-        """Update an item"""
+        """Update an recommendation"""
         recommendation = Recommendation(id=1, src_product_id=100, rec_product_id = 200, type= "UP_SELL")
         self.assertIsNot(recommendation, None)
         self.assertEqual(recommendation.id, 1)
