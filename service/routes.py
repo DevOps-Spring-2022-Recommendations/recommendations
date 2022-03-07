@@ -4,17 +4,10 @@ Recommendations Service
 The recommendations resource is a representation a product recommendation based on another product
 """
 
-from flask import jsonify, request, url_for, make_response, abort
-from . import status  # HTTP Status Codes
+from flask import jsonify, request, url_for, abort, make_response
+from service.models import Recommendation
+from . import app, status  # HTTP Status Codes
 from werkzeug.exceptions import NotFound
-
-
-# For this example we'll use SQLAlchemy, a popular ORM that supports a
-# variety of backends including SQLite, MySQL, and PostgreSQL
-from service.models import Product
-
-# Import Flask application
-from . import app
 
 ######################################################################
 # GET INDEX
@@ -25,33 +18,107 @@ def index():
     app.logger.info("Request for Root URL")
     return (
         jsonify(
-            name="API to get recommendations for a item",
+            name="Recommendation REST API Service",
             version="1.0",
-            paths=url_for("get_similar_products", _external=True),
+            paths=url_for("list_recommendations", _external=True),
         ),
         status.HTTP_200_OK,
     )
 
+######################################################################
+# LIST ALL RECOMMENDATIONS
+######################################################################
+
+@app.route("/recommendations", methods=["GET"])
+def list_recommendations():
+    """Returns all of the recommendation"""
+    recommendations = Recommendation.all()
+    results = [recommendation.serialize() for recommendation in recommendations]
+    app.logger.info("Returning %d recommendations", len(results))
+    return make_response(jsonify(results), status.HTTP_200_OK)
+
+
+
+
+######################################################################
+# RETRIEVE A RECOMMENDATION BY ID
+######################################################################
+
+@app.route("/recommendations/<int:id>", methods=["GET"])
+def get_recommendations(id):
+    """
+    Retrieve a single Recommendation
+
+    This endpoint will return a Recommendation based on it's id
+    """
+    app.logger.info("Request for recommendation with id: %s", id)
+    recommendation = Recommendation.find(id)
+    if not recommendation:
+        raise NotFound("Recommendation with id '{}' was not found.".format(id))
+
+    app.logger.info("Returning recommendation: %s", recommendation.id)
+    return make_response(jsonify(recommendation.serialize()), status.HTTP_200_OK)
+
+######################################################################
+# ADD A NEW RECOMMENDATION
+######################################################################
 
 @app.route("/recommendations", methods=["POST"])
-def create_products():
+def create_recommendations():
     """
-    Creates a Product
-    This endpoint will create a Product based the data in the body that is posted
+    Creates a Recommendation
+    This endpoint will create a Recommendation based the data in the body that is posted
     """
-    app.logger.info("Request to create a Product")
+    app.logger.info("Request to create a Recommendation")
     check_content_type("application/json")
-    product = Product()
-    product.deserialize(request.get_json())
-    product.create()
-    message = product.serialize()
-    location_url = url_for("get_products", item_id=product.id, _external=True)
+    recommendation = Recommendation()
+    recommendation.deserialize(request.get_json())
+    recommendation.create()
+    message = recommendation.serialize()
+    location_url = url_for("get_recommendations", id=recommendation.id, _external=True)
 
-    app.logger.info("product with ID [%s] created.", product.id)
+    app.logger.info("Recommendation with ID [%d] created.", recommendation.id)
     return make_response(
         jsonify(message), status.HTTP_201_CREATED, {"Location": location_url}
     )
 
+######################################################################
+# UPDATE AN EXISTING RECOMMENDATION
+######################################################################
+@app.route("/recommendations/<int:item_id>", methods=["PUT"])
+def update_recommendations(item_id):
+    """
+    Update a Recommendation
+    This endpoint will update a Recommendation based the body that is posted
+    """
+    app.logger.info("Request to update a recommendation with id: %s", item_id)
+    check_content_type("application/json")
+    recommendation = Recommendation.find(item_id)
+    if not recommendation:
+        raise NotFound("recommendation with id '{}' was not found.".format(item_id))
+    recommendation.deserialize(request.get_json())
+    recommendation.id = item_id
+    recommendation.update()
+
+    app.logger.info("recommendation with ID [%s] updated.", recommendation.id)
+    return make_response(jsonify(recommendation.serialize()), status.HTTP_200_OK)
+
+######################################################################
+# DELETE A RECOMMENDATION
+######################################################################
+@app.route("/recommendations/<int:item_id>", methods=["DELETE"])
+def delete_recommendations(item_id):
+    """
+    Delete a recommendation
+    This endpoint will delete a recommendation based the id specified in the path
+    """
+    app.logger.info("Request to delete recommendation with id: %s", item_id)
+    recommendation = Recommendation.find(item_id)
+    if recommendation:
+        recommendation.delete()
+
+    app.logger.info("recommendation with ID [%s] delete complete.", item_id)
+    return make_response("", status.HTTP_204_NO_CONTENT)
 
 ######################################################################
 #  U T I L I T Y   F U N C T I O N S
@@ -70,4 +137,4 @@ def check_content_type(media_type):
 
 def init_db():
     """ Initializes the SQLAlchemy app """
-    Product.init_db(app)
+    Recommendation.init_db(app)
