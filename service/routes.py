@@ -84,7 +84,7 @@ def update_recommendations(item_id):
     recommendation.id = item_id
     recommendation.update()
 
-    app.logger.info("recommendation with ID [%s] updated.", product.id)
+    app.logger.info("recommendation with ID [%s] updated.", recommendation.id)
     return make_response(jsonify(recommendation.serialize()), status.HTTP_200_OK)
 
 ######################################################################
