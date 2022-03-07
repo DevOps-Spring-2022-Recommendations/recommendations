@@ -114,7 +114,7 @@ class TestRecommendationServer(TestCase):
         resp = self.app.post(BASE_URL)
         self.assertEqual(resp.status_code, status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
         
-     def test_update_recommendatio(self):
+    def test_update_recommendatio(self):
         """Update an existing item"""
         # create a recommendatio to update
         test_recommendation = RecommendationFactory()
