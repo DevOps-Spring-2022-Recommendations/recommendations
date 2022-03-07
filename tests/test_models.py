@@ -156,7 +156,7 @@ class TestRecommendationModel(unittest.TestCase):
         self.assertEqual(len(recommendations), 1)
         self.assertEqual(recommendations[0].src_product_id, 100)
         self.assertEqual(recommendations[0].rec_product_id, 400)
-        self.assertEqual(recommendations[0].type, "UP_SELL")
+        self.assertEqual(recommendations[0].type.name, "UP_SELL")
 
     def test_update_a_recommendation_validation_error(self):
         """Update a item Validation Error"""
