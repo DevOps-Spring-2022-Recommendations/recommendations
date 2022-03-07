@@ -137,7 +137,7 @@ class TestRecommendationServer(TestCase):
         # update the recommendation
         new_recommendation = resp.get_json()
         logging.debug(new_recommendation)
-        new_recommendation["category"] = "unknown"
+        new_recommendation["src_product_id"] = 55
         resp = self.app.put(
             "/recommendations/{}".format(new_recommendation["id"]),
             json=new_recommendation,
@@ -145,7 +145,7 @@ class TestRecommendationServer(TestCase):
         )
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         updated_recommendation = resp.get_json()
-        self.assertEqual(updated_recommendation["category"], "unknown")
+        self.assertEqual(updated_recommendation["src_product_id"], 55)
 
     def test_delete_recommendation(self):
         """Delete a item"""
