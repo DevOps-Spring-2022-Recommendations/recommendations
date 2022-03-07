@@ -124,12 +124,25 @@ class TestRecommendationServer(TestCase):
         """Create a recommendation with no content type"""
         resp = self.app.post(BASE_URL)
         self.assertEqual(resp.status_code, status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
-    
-    def test_get_products_list(self):
-        """Get a list of items"""
+
+    def test_delete_recommendation(self):
+        """Delete a item"""
+        test_recommendation = self._create_recommendations(1)[0]
+        resp = self.app.delete(
+            "{0}/{1}".format(BASE_URL, test_recommendation.id), content_type=CONTENT_TYPE_JSON
+        )
+        self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(len(resp.data), 0)
+        # make sure they are deleted
+        resp = self.app.get(
+            "{0}/{1}".format(BASE_URL, test_recommendation.id), content_type=CONTENT_TYPE_JSON
+        )
+        self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_get_recommendations_list(self):
+        """Get a list of recommendations"""
         self._create_recommendations(5)
         resp = self.app.get(BASE_URL)
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         data = resp.get_json()
         self.assertEqual(len(data), 5)
-

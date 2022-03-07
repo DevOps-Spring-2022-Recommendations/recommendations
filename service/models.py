@@ -54,6 +54,14 @@ class Recommendation(db.Model):
         self.id = None  # id must be none to generate next primary key
         db.session.add(self)
         db.session.commit()
+        
+    def delete(self):
+        """
+        Removes a Recommendation from the database
+        """
+        logger.info("Deleting %s", self.id)
+        db.session.delete(self)
+        db.session.commit()
 
     def serialize(self) -> dict:
         """Serializes a Recommendation into a dictionary"""
@@ -141,5 +149,3 @@ class Recommendation(db.Model):
         db.init_app(app)
         app.app_context().push()
         db.create_all()  # make our sqlalchemy tables
-        
-

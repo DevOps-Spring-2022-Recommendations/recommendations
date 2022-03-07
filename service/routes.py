@@ -90,7 +90,19 @@ def create_recommendations():
 ######################################################################
 # DELETE A RECOMMENDATION
 ######################################################################
+@app.route("/recommendations/<int:item_id>", methods=["DELETE"])
+def delete_recommendations(item_id):
+    """
+    Delete a recommendation
+    This endpoint will delete a recommendation based the id specified in the path
+    """
+    app.logger.info("Request to delete recommendation with id: %s", item_id)
+    recommendation = Recommendation.find(item_id)
+    if recommendation:
+        recommendation.delete()
 
+    app.logger.info("recommendation with ID [%s] delete complete.", item_id)
+    return make_response("", status.HTTP_204_NO_CONTENT)
 
 ######################################################################
 #  U T I L I T Y   F U N C T I O N S
