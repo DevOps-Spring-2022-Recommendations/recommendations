@@ -26,6 +26,11 @@ class Type(Enum):
     UP_SELL = 1
     ACCESSORY = 2
 
+class Status(Enum):
+    """Enumeration of the status of Recommendations"""
+
+    DISABLED = 0
+    ENABLED = 1
 
 class Recommendation(db.Model):
     """
@@ -41,10 +46,13 @@ class Recommendation(db.Model):
     type = db.Column( # recommendation type
         db.Enum(Type), nullable=False, server_default=(Type.CROSS_SELL.name)
     )
+    status = db.Column( # recommendation type
+        db.Enum(Status), nullable=False, server_default=(Status.ENABLED.name)
+    )
 
     def __repr__(self):
-        return "<Recommendation id=[%s], src_product_id=[%s], rec_product_id=[%s], type=[%s]>" % \
-            (self.id, self.src_product_id, self.rec_product_id, self.type.name)
+        return "<Recommendation id=[%s], src_product_id=[%s], rec_product_id=[%s], type=[%s], status=[%s]>" % \
+            (self.id, self.src_product_id, self.rec_product_id, self.type.name, self.status.name)
 
     def create(self):
         """
@@ -78,6 +86,7 @@ class Recommendation(db.Model):
             "src_product_id": self.src_product_id,
             "rec_product_id": self.rec_product_id,
             "type": self.type.name, # convert enum to string
+            "status": self.status.name, # convert enum to string
         }
 
     def deserialize(self, data: dict):
@@ -102,6 +111,7 @@ class Recommendation(db.Model):
                     + str(type(data["rec_product_id"]))
                 )
             self.type = getattr(Type, data["type"])  # create enum from string
+            self.status = getattr(Status, data["status"])  # create enum from string
         except AttributeError as error:
             raise DataValidationError("Invalid attribute: " + error.args[0])
         except KeyError as error:
