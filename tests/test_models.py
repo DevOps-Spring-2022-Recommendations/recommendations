@@ -6,7 +6,7 @@ import os
 import logging
 import unittest
 from werkzeug.exceptions import NotFound
-from service.models import Recommendation, Type, DataValidationError, db
+from service.models import Recommendation, Type, Status, DataValidationError, db
 from service import app
 from .factories import RecommendationFactory
 
@@ -63,6 +63,8 @@ class TestRecommendationModel(unittest.TestCase):
         self.assertEqual(data["rec_product_id"], recommendation.rec_product_id)
         self.assertIn("type", data)
         self.assertEqual(data["type"], recommendation.type.name)
+        self.assertIn("status", data)
+        self.assertEqual(data["status"], recommendation.status.name)
 
     def test_deserialize_a_recommendation(self):
         """Test deserialization of a recommendation"""
@@ -71,6 +73,7 @@ class TestRecommendationModel(unittest.TestCase):
             "src_product_id": 21,
             "rec_product_id": 50,
             "type": "UP_SELL",
+            "status": "ENABLED",
         }
         recommendation = Recommendation()
         recommendation.deserialize(data)
@@ -79,6 +82,7 @@ class TestRecommendationModel(unittest.TestCase):
         self.assertEqual(recommendation.src_product_id, 21)
         self.assertEqual(recommendation.rec_product_id, 50)
         self.assertEqual(recommendation.type, Type.UP_SELL)
+        self.assertEqual(recommendation.status, Status.ENABLED)
 
     def test_deserialize_missing_data(self):
         """Test deserialization of a recommendation with missing data"""
@@ -118,18 +122,19 @@ class TestRecommendationModel(unittest.TestCase):
 
     def test_create_a_recommendation(self):
         """Create a Recommendation and assert that it exists"""
-        recommendation = Recommendation(id=1, src_product_id=100, rec_product_id=200, type="UP_SELL")
+        recommendation = Recommendation(id=1, src_product_id=100, rec_product_id=200, type="UP_SELL", status="ENABLED")
         self.assertIsNot(recommendation, None)
         self.assertEqual(recommendation.id, 1)
         self.assertEqual(recommendation.src_product_id, 100)
         self.assertEqual(recommendation.rec_product_id, 200)
         self.assertEqual(recommendation.type, "UP_SELL")
+        self.assertEqual(recommendation.status, "ENABLED")
 
     def test_add_a_recommendation(self):
         """Create a Recommendation and add it to the database"""
         recommendations = Recommendation.all()
         self.assertEqual(recommendations, [])
-        recommendation = Recommendation(id=1, src_product_id=100, rec_product_id=200, type="UP_SELL")
+        recommendation = Recommendation(id=1, src_product_id=100, rec_product_id=200, type="UP_SELL", status="ENABLED")
         self.assertTrue(recommendation != None)
         self.assertEqual(recommendation.id, 1)
         recommendation.create()
@@ -140,7 +145,7 @@ class TestRecommendationModel(unittest.TestCase):
 
     def test_update_a_recommendation(self):
         """Update an recommendation"""
-        recommendation = Recommendation(id=1, src_product_id=100, rec_product_id=200, type="UP_SELL")
+        recommendation = Recommendation(id=1, src_product_id=100, rec_product_id=200, type="UP_SELL", status="ENABLED")
         self.assertIsNot(recommendation, None)
         self.assertEqual(recommendation.id, 1)
         recommendation.create()
@@ -157,20 +162,21 @@ class TestRecommendationModel(unittest.TestCase):
         self.assertEqual(recommendations[0].src_product_id, 100)
         self.assertEqual(recommendations[0].rec_product_id, 400)
         self.assertEqual(recommendations[0].type.name, "UP_SELL")
+        self.assertEqual(recommendations[0].status.name, "ENABLED")
 
     def test_update_a_recommendation_validation_error(self):
         """Update a item Validation Error"""
-        recommendation = Recommendation(src_product_id=100, rec_product_id=200, type="UP_SELL")
+        recommendation = Recommendation(src_product_id=100, rec_product_id=200, type="UP_SELL", status="ENABLED")
         self.assertRaises(DataValidationError, recommendation.update)
 
     def test_delete_a_recommendation(self):
         """Delete a item"""
-        recommendation = Recommendation(id=1, src_product_id=100, rec_product_id=200, type="UP_SELL")
+        recommendation = Recommendation(id=1, src_product_id=100, rec_product_id=200, type="UP_SELL", status="ENABLED")
         recommendation.create()
         self.assertEqual(len(recommendation.all()), 1)
         # delete the  recommendation and make sure it isn't in the database
         recommendation.delete()
-        self.assertEqual(len( recommendation.all()), 0)
+        self.assertEqual(len(recommendation.all()), 0)
 
     def test_find_all(self):
         """Find some or all items"""

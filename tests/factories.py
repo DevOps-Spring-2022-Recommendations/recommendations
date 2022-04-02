@@ -18,7 +18,7 @@ Test Factory to make fake objects for testing
 import factory
 from factory.fuzzy import FuzzyChoice
 from factory.fuzzy import FuzzyInteger
-from service.models import Recommendation, Type
+from service.models import Recommendation, Type, Status
 
 
 class RecommendationFactory(factory.Factory):
@@ -31,3 +31,4 @@ class RecommendationFactory(factory.Factory):
     src_product_id = FuzzyInteger(999)
     rec_product_id = FuzzyInteger(999)
     type = FuzzyChoice(choices=[Type.CROSS_SELL, Type.UP_SELL, Type.ACCESSORY])
+    status = FuzzyChoice(choices=[Status.ENABLED, Status.DISABLED])

@@ -5,7 +5,7 @@ The recommendations resource is a representation a product recommendation based 
 """
 
 from flask import jsonify, request, url_for, abort, make_response
-from service.models import Recommendation
+from service.models import Recommendation, Status
 from . import app, status  # HTTP Status Codes
 from werkzeug.exceptions import NotFound
 
@@ -119,6 +119,43 @@ def delete_recommendations(item_id):
 
     app.logger.info("recommendation with ID [%s] delete complete.", item_id)
     return make_response("", status.HTTP_204_NO_CONTENT)
+
+######################################################################
+# ACTION: ENABLE AND DISABLE A RECOMMENDATION
+######################################################################
+@app.route("/recommendations/<int:id>/enable", methods=["PUT"])
+def enable_recommendations(id):
+    """
+    Enable a recommendation
+    This endpoint will enable a recommendation based on the id specified in the path
+    """
+    app.logger.info("Request to enable recommendation with id: %s", id)
+    recommendation = Recommendation.find(id)
+    if not recommendation:
+        raise NotFound("recommendation with id '{}' was not found.".format(id))
+    recommendation.deserialize(request.get_json())
+    recommendation.status = Status.ENABLED
+    recommendation.update()
+
+    app.logger.info("recommendation with ID [%s] enabled.", recommendation.id)
+    return make_response(jsonify(recommendation.serialize()), status.HTTP_200_OK)
+
+@app.route("/recommendations/<int:id>/disable", methods=["PUT"])
+def disable_recommendations(id):
+    """
+    Disable a recommendation
+    This endpoint will disable a recommendation based on the id specified in the path
+    """
+    app.logger.info("Request to disable recommendation with id: %s", id)
+    recommendation = Recommendation.find(id)
+    if not recommendation:
+        raise NotFound("recommendation with id '{}' was not found.".format(id))
+    recommendation.deserialize(request.get_json())
+    recommendation.status = Status.DISABLED
+    recommendation.update()
+
+    app.logger.info("recommendation with ID [%s] disabled.", recommendation.id)
+    return make_response(jsonify(recommendation.serialize()), status.HTTP_200_OK)
 
 ######################################################################
 #  U T I L I T Y   F U N C T I O N S

@@ -126,7 +126,7 @@ class TestRecommendationServer(TestCase):
         self.assertEqual(resp.status_code, status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
 
     def test_update_recommendation(self):
-        """Update an existing item"""
+        """Update an existing recommendation"""
         # create a recommendation to update
         test_recommendation = RecommendationFactory()
         resp = self.app.post(
@@ -148,7 +148,7 @@ class TestRecommendationServer(TestCase):
         self.assertEqual(updated_recommendation["src_product_id"], 55)
 
     def test_delete_recommendation(self):
-        """Delete a item"""
+        """Delete a recommendation"""
         test_recommendation = self._create_recommendations(1)[0]
         resp = self.app.delete(
             "{0}/{1}".format(BASE_URL, test_recommendation.id), content_type=CONTENT_TYPE_JSON
@@ -168,3 +168,55 @@ class TestRecommendationServer(TestCase):
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         data = resp.get_json()
         self.assertEqual(len(data), 5)
+
+    def test_enable_recommendations(self):
+        """Enable a recommendation"""
+        # test recommendation not found
+        resp = self.app.put("/recommendations/1/enable",
+            json=None,
+            content_type=CONTENT_TYPE_JSON,
+        )
+        self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
+
+        # create a recommendation to test
+        test_recommendation = RecommendationFactory()
+        resp = self.app.post(
+            BASE_URL, json=test_recommendation.serialize(), content_type=CONTENT_TYPE_JSON
+        )
+        self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
+
+        recommendation = resp.get_json()
+        logging.debug(recommendation)
+        resp = self.app.put("/recommendations/{}/enable".format(recommendation["id"]),
+            json=recommendation,
+            content_type=CONTENT_TYPE_JSON,
+        )
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        enabled = resp.get_json()
+        self.assertEqual(enabled["status"], "ENABLED")
+
+    def test_disable_recommendation(self):
+        """Disable a recommendation"""
+        # test recommendation not found
+        resp = self.app.put("/recommendations/1/disable",
+            json=None,
+            content_type=CONTENT_TYPE_JSON,
+        )
+        self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
+
+        # create a recommendation to test
+        test_recommendation = RecommendationFactory()
+        resp = self.app.post(
+            BASE_URL, json=test_recommendation.serialize(), content_type=CONTENT_TYPE_JSON
+        )
+        self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
+
+        recommendation = resp.get_json()
+        logging.debug(recommendation)
+        resp = self.app.put("/recommendations/{}/disable".format(recommendation["id"]),
+            json=recommendation,
+            content_type=CONTENT_TYPE_JSON,
+        )
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        disabled = resp.get_json()
+        self.assertEqual(disabled["status"], "DISABLED")
