@@ -10,6 +10,7 @@ the one they initially want to buy, cross-sells are other items just like this o
 features and price.) You should use enumerations to represent the different recommendation
 types.    
 
+
 ## Available Calls
 /recommendations: GET \
 /recommendations: POST \
