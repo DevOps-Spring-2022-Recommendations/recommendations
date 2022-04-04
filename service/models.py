@@ -167,3 +167,16 @@ class Recommendation(db.Model):
         db.init_app(app)
         app.app_context().push()
         db.create_all()  # make our sqlalchemy tables
+
+    @classmethod
+    def find_by_src_id(cls, source_id : int):
+        """Returns all Recommendations by source product id
+
+        :param id: the id of the source product to find
+        :type id: int
+
+        :return: list of Recommendations
+        :rtype: list
+
+        """
+        return cls.query.filter(cls.src_product_id == source_id)
