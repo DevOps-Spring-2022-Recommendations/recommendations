@@ -3,6 +3,7 @@
 [![Build Status](https://github.com/DevOps-Spring-2022-Recommendations/recommendations/workflows/workflow.yml/badge.svg)](https://github.com/DevOps-Spring-2022-Recommendations/recommendations/actions)
 [![Codecov](https://codecov.io/gh/DevOps-Spring-2022-Recommendations/recommendations/branch/master/graph/badge.svg)](https://codecov.io/gh/DevOps-Spring-2022-Recommendations/recommendations/branch/master/graph/badge.svg)
 
+
 The recommendations resource is a representation a product recommendation based on
 another product. In essence it is just a relationship between two products that "go
 together" (e.g., radio and batteries, printers and ink, shirts and pants, etc.). It could also
@@ -12,6 +13,7 @@ usually buy item B". Recommendations should have a recommendation type like cros
 the one they initially want to buy, cross-sells are other items just like this one with similar
 features and price.) You should use enumerations to represent the different recommendation
 types.    
+
 
 ## Available Calls
 /recommendations: GET \

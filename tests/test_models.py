@@ -219,3 +219,19 @@ class TestRecommendationModel(unittest.TestCase):
     def test_find_or_404_not_found(self):
         """Find or return 404 NOT found"""
         self.assertRaises(NotFound, Recommendation.find_or_404, 0)
+        
+        
+    def test_find_by_type(self):
+        """Find products by type"""
+        recommendation = Recommendation(id=1, src_product_id=100, rec_product_id=200, type="UP_SELL", status="ENABLED")
+        self.assertTrue(recommendation != None)
+        self.assertEqual(recommendation.id, 1)
+        recommendation.create()
+        # Assert that it was assigned an id and shows up in the database
+        self.assertEqual(recommendation.id, 1)
+        recommendation = Recommendation.find_by_type(recommendation.type)
+        # Assert the coorect product is found
+        self.assertIsNot(recommendation, None)
+        self.assertEqual(recommendation[0].id, 1)
+        self.assertEqual(recommendation[0].src_product_id, 100)
+        self.assertEqual(recommendation[0].type,Type.UP_SELL)
