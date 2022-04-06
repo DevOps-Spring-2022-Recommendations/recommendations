@@ -1,9 +1,5 @@
 # recommendations
 
-[![Build Status](https://github.com/DevOps-Spring-2022-Recommendations/recommendations/workflows/workflow.yml/badge.svg)](https://github.com/DevOps-Spring-2022-Recommendations/recommendations/actions)
-[![Codecov](https://codecov.io/gh/DevOps-Spring-2022-Recommendations/recommendations/branch/master/graph/badge.svg)](https://codecov.io/gh/DevOps-Spring-2022-Recommendations/recommendations/branch/master/graph/badge.svg)
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-
 The recommendations resource is a representation a product recommendation based on
 another product. In essence it is just a relationship between two products that "go
 together" (e.g., radio and batteries, printers and ink, shirts and pants, etc.). It could also
