@@ -167,3 +167,8 @@ class Recommendation(db.Model):
         db.init_app(app)
         app.app_context().push()
         db.create_all()  # make our sqlalchemy tables
+        
+    @classmethod
+    def find_by_type(cls, type: str):
+        logger.info("Processing category query for %s ...", type)
+        return cls.query.filter(cls.type == type)
