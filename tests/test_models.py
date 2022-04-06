@@ -215,22 +215,6 @@ class TestRecommendationModel(unittest.TestCase):
         self.assertEqual(recommendation.src_product_id, recommendations[1].src_product_id)
         self.assertEqual(recommendation.rec_product_id, recommendations[1].rec_product_id)
         self.assertEqual(recommendation.type, recommendations[1].type)
-        
-    def test_find_by_rec_product_id(self):
-        """Find a Recommendation by ID"""
-        recommendations = RecommendationFactory.create_batch(3)
-        for recommendation in recommendations:
-            recommendation.create()
-        logging.debug(recommendations)
-        # make sure they got saved
-        self.assertEqual(len(Recommendation.all()), 3)
-        recommendation = Recommendation.find_by_rec_product_id(recommendations[1].rec_product_id)
-        self.assertIsNot(recommendation, None)
-        self.assertEqual(recommendation.id, recommendations[1].id)
-        self.assertEqual(recommendation.src_product_id, recommendations[1].src_product_id)
-        self.assertEqual(recommendation.src_product_id, recommendations[1].src_product_id)
-        self.assertEqual(recommendation.type, recommendations[1].type)
-        self.assertEqual(recommendation.status, recommendations[1].status)
 
     def test_find_or_404_not_found(self):
         """Find or return 404 NOT found"""
