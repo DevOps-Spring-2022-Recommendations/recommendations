@@ -155,7 +155,12 @@ class Recommendation(db.Model):
         """
         logger.info("Processing lookup or 404 for id %s ...", id)
         return cls.query.get_or_404(id)
-
+    
+    @classmethod
+    def find_by_rec_product_id(cls, rec_product_id: int):
+        logger.info("Processing lookup for recommended product id %s ...", rec_product_id)
+        return cls.query.get(rec_product_id)
+    
     @classmethod
     def init_db(cls, app: Flask):
         """Initializes the database session
