@@ -155,7 +155,12 @@ class Recommendation(db.Model):
         """
         logger.info("Processing lookup or 404 for id %s ...", id)
         return cls.query.get_or_404(id)
-
+    
+    @classmethod
+    def find_by_rec_product_id(cls, rec_product_id: int):
+        logger.info("Processing lookup for recommended product id %s ...", rec_product_id)
+        return cls.query.get(rec_product_id)
+    
     @classmethod
     def init_db(cls, app: Flask):
         """Initializes the database session
@@ -167,6 +172,7 @@ class Recommendation(db.Model):
         db.init_app(app)
         app.app_context().push()
         db.create_all()  # make our sqlalchemy tables
+
 
     @classmethod
     def find_by_src_id(cls, source_id : int):
@@ -180,3 +186,10 @@ class Recommendation(db.Model):
 
         """
         return cls.query.filter(cls.src_product_id == source_id)
+=======
+        
+    @classmethod
+    def find_by_type(cls, type: str):
+        logger.info("Processing category query for %s ...", type)
+        return cls.query.filter(cls.type == type)
+
