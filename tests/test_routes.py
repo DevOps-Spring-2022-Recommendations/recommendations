@@ -220,18 +220,3 @@ class TestRecommendationServer(TestCase):
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         disabled = resp.get_json()
         self.assertEqual(disabled["status"], "DISABLED")
-    
-    def test_query_recommendations_by_rec_id(self):
-        """Query Recommendations by Rec ID"""
-        recommendations = self._create_recommendations(10)
-        test_rec_id = recommendations[0].rec_product_id
-        rec_id_recos = [reco for reco in recommendations if reco.rec_product_id == test_rec_id]
-        resp = self.app.get(
-            BASE_URL, query_string="Rec ID={}".format(quote_plus(test_rec_id))
-        )
-        self.assertEqual(resp.status_code, status.HTTP_200_OK)
-        data = resp.get_json()
-        self.assertEqual(len(data), len(rec_id_recos))
-        # check the data just to be sure
-        for reco in data:
-            self.assertEqual(reco["rec_product_id"], test_rec_id)
