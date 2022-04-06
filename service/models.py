@@ -172,3 +172,13 @@ class Recommendation(db.Model):
     def find_by_type(cls, type: str):
         logger.info("Processing category query for %s ...", type)
         return cls.query.filter(cls.type == type)
+
+    @classmethod
+    def find_by_src_id(cls, source_id : int):
+        """Returns all Recommendations by source product id
+        :param id: the id of the source product to find
+        :type id: int
+        :return: list of Recommendations
+        :rtype: list
+        """
+        return cls.query.filter(cls.src_product_id == source_id)
