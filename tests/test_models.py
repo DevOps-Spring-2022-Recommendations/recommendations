@@ -215,7 +215,7 @@ class TestRecommendationModel(unittest.TestCase):
         self.assertEqual(recommendation.rec_product_id, recommendations[1].rec_product_id)
         self.assertEqual(recommendation.type, recommendations[1].type)
 
-    def test_find_by_sourceID(self):
+    def test_find_by_src_id(self):
         """Find Recommendations by Source ID"""
         recommendation = Recommendation(src_product_id=100, rec_product_id=200, type="UP_SELL", status="ENABLED")
         recommendation.create()
