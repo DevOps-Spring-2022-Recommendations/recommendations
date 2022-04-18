@@ -12,12 +12,14 @@ services:
     #   - 8000:8000
     volumes:
       - ..:/app
+      - ~/.bluemix/:/home/devops/.bluemix/
     command: sleep infinity
     environment:
       FLASK_APP: service:app
       FLASK_ENV: development
       GUNICORN_BIND: "0.0.0.0:8000"
       DATABASE_URI: postgresql://postgres:postgres@postgres:5432/postgres
+      # DATABASE_URI: postgres://noqzxriw:9KXM7CXX7kW2YeHxCy7XthHVKcfqnggO@salt.db.elephantsql.com/noqzxriw
     networks:
       - dev
     depends_on:
