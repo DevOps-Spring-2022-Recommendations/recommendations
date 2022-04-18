@@ -19,7 +19,7 @@ services:
       FLASK_ENV: development
       GUNICORN_BIND: "0.0.0.0:8000"
       DATABASE_URI: postgresql://postgres:postgres@postgres:5432/postgres
-      # DATABASE_URI: DATABASE_URI: postgres://noqzxriw:9KXM7CXX7kW2YeHxCy7XthHVKcfqnggO@salt.db.elephantsql.com/noqzxriw
+      # DATABASE_URI: postgres://noqzxriw:9KXM7CXX7kW2YeHxCy7XthHVKcfqnggO@salt.db.elephantsql.com/noqzxriw
     networks:
       - dev
     depends_on:
