@@ -6,16 +6,25 @@ $(function () {
 
     // Updates the form with data from the response
     function update_form_data(res) {
-        $("#pet_id").val(res._id);
-        $("#pet_name").val(res.name);
-        $("#pet_category").val(res.category);
-        if (res.available == true) {
-            $("#pet_available").val("true");
-        } else {
-            $("#pet_available").val("false");
-        }
-        $("#pet_gender").val(res.gender);
-        $("#pet_birthday").val(res.birthday);
+        // let type = $("#r_type").val();
+        // let status = $("#r_status").val();
+        // let src_product_id = parseInt($("#sourceid").val());
+        // let rec_product_id = parseInt($("#targetid").val());
+        
+        $("#pet_id").val(res.id);
+        $("#r_type").val(res.type);
+        $("#r_status").val(res.status);
+        $("#targetid").val(res.rec_product_id);
+        $("#sourceid").val(res.src_product_id);
+        // $("#pet_name").val(res.name);
+        // $("#pet_category").val(res.category);
+        // if (res.available == true) {
+        //     $("#pet_available").val("true");
+        // } else {
+        //     $("#pet_available").val("false");
+        // }
+        // $("#pet_gender").val(res.gender);
+        // $("#pet_birthday").val(res.birthday);
     }
 
     /// Clears all form fields
@@ -39,25 +48,25 @@ $(function () {
 
     $("#create-btn").click(function () {
 
-        let name = $("#pet_name").val();
-        let category = $("#pet_category").val();
-        let available = $("#pet_available").val() == "true";
-        let gender = $("#pet_gender").val();
-        let birthday = $("#pet_birthday").val();
+        let type = $("#r_type").val();
+        let status = $("#r_status").val();
+        let src_product_id = parseInt($("#sourceid").val());
+        let rec_product_id = parseInt($("#targetid").val());
+    
 
         let data = {
-            "name": name,
-            "category": category,
-            "available": available,
-            "gender": gender,
-            "birthday": birthday
+            
+            "src_product_id": src_product_id,
+            "rec_product_id": rec_product_id,
+            "type": type,
+            "status": status
         };
 
         $("#flash_message").empty();
-        
+       
         let ajax = $.ajax({
             type: "POST",
-            url: "/pets",
+            url: "/recommendations",
             contentType: "application/json",
             data: JSON.stringify(data),
         });
@@ -69,6 +78,8 @@ $(function () {
 
         ajax.fail(function(res){
             flash_message(res.responseJSON.message)
+            flash_message("error")
+            // flash_message(src_product_id)
         });
     });
 
@@ -80,25 +91,24 @@ $(function () {
     $("#update-btn").click(function () {
 
         let pet_id = $("#pet_id").val();
-        let name = $("#pet_name").val();
-        let category = $("#pet_category").val();
-        let available = $("#pet_available").val() == "true";
-        let gender = $("#pet_gender").val();
-        let birthday = $("#pet_birthday").val();
+        let type = $("#r_type").val();
+        let status = $("#r_status").val();
+        let src_product_id = parseInt($("#sourceid").val());
+        let rec_product_id = parseInt($("#targetid").val());
 
         let data = {
-            "name": name,
-            "category": category,
-            "available": available,
-            "gender": gender,
-            "birthday": birthday
+            
+            "src_product_id": src_product_id,
+            "rec_product_id": rec_product_id,
+            "type": type,
+            "status": status
         };
 
         $("#flash_message").empty();
 
         let ajax = $.ajax({
                 type: "PUT",
-                url: `/pets/${pet_id}`,
+                url: `/recommendations/${pet_id}`,
                 contentType: "application/json",
                 data: JSON.stringify(data)
             })
@@ -126,7 +136,7 @@ $(function () {
 
         let ajax = $.ajax({
             type: "GET",
-            url: `/pets/${pet_id}`,
+            url: `/recommendations/${pet_id}`,
             contentType: "application/json",
             data: ''
         })
@@ -156,14 +166,14 @@ $(function () {
 
         let ajax = $.ajax({
             type: "DELETE",
-            url: `/pets/${pet_id}`,
+            url: `/recommendations/${pet_id}`,
             contentType: "application/json",
             data: '',
         })
 
         ajax.done(function(res){
             clear_form_data()
-            flash_message("Pet has been Deleted!")
+            flash_message("Recommandation has been Deleted!")
         });
 
         ajax.fail(function(res){
@@ -215,7 +225,7 @@ $(function () {
 
         let ajax = $.ajax({
             type: "GET",
-            url: `/pets?${queryString}`,
+            url: `/recommendations?${queryString}`,
             contentType: "application/json",
             data: ''
         })
