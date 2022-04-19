@@ -1,7 +1,6 @@
 # recommendations
 
 [![Build Status](https://github.com/DevOps-Spring-2022-Recommendations/recommendations/actions/workflows/workflow.yml/badge.svg)](https://github.com/DevOps-Spring-2022-Recommendations/recommendations/actions)
-[![Build Status](https://github.com/DevOps-Spring-2022-Recommendations/recommendations/actions/workflows/bdd-tests.yml/badge.svg)](https://github.com/DevOps-Spring-2022-Recommendations/recommendations/actions)
 [![Codecov](https://codecov.io/gh/DevOps-Spring-2022-Recommendations/recommendations/branch/main/graph/badge.svg?token=286cb5ea-a3a9-413f-8c4b-a1cde07e0bb5)](https://codecov.io/gh/DevOps-Spring-2022-Recommendations/recommendations)
 
 The recommendations resource is a representation a product recommendation based on
