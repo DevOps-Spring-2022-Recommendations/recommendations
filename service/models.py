@@ -121,13 +121,13 @@ class Recommendation(db.Model):
                 "Invalid recommendation: body of request contained bad or no data " + str(error)
             )
         return self
-    
+
     @classmethod
     def all(cls) -> list:
         """ Returns all of the Products in the database """
         logger.info("Processing all Products")
         return cls.query.all()
-    
+
     @classmethod
     def find(cls, id: int):
         """Finds a Recommendation by it's ID
@@ -157,18 +157,6 @@ class Recommendation(db.Model):
         return cls.query.get_or_404(id)
 
     @classmethod
-    def init_db(cls, app: Flask):
-        """Initializes the database session
-        :param app: the Flask app
-        :type data: Flask
-        """
-        logger.info("Initializing database")
-        # This is where we initialize SQLAlchemy from the Flask app
-        db.init_app(app)
-        app.app_context().push()
-        db.create_all()  # make our sqlalchemy tables
-        
-    @classmethod
     def find_by_type(cls, type: str):
         logger.info("Processing category query for %s ...", type)
         return cls.query.filter(cls.type == type)
@@ -182,3 +170,15 @@ class Recommendation(db.Model):
         :rtype: list
         """
         return cls.query.filter(cls.src_product_id == source_id)
+
+    @classmethod
+    def init_db(cls, app: Flask):
+        """Initializes the database session
+        :param app: the Flask app
+        :type data: Flask
+        """
+        logger.info("Initializing database")
+        # This is where we initialize SQLAlchemy from the Flask app
+        db.init_app(app)
+        app.app_context().push()
+        db.create_all()  # make our sqlalchemy tables
