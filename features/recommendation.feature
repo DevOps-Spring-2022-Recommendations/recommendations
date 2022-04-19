@@ -2,7 +2,7 @@
 Feature: The Recomendation store service back-end
     As a Recommendation Store Owner
     I need a RESTful catalog service
-    So that I can keep track of all my pets
+    So that I can keep track of all my Recommendations
 
 Background:
     Given the server is started
