@@ -20,3 +20,4 @@ types.
 /recommendations/\<int:id>: GET \
 /recommendations/\<int:id>: PUT \
 /recommendations/\<int:id>: DELETE
+
