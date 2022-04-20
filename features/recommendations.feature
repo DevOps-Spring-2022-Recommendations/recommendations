@@ -42,3 +42,22 @@ Scenario: List all recommendations
     And I should see "201" in the results
     And I should see "101" in the results
     And I should not see "300" in the results
+    
+Scenario: Update a recommendation
+    When I visit the "Home Page"
+    And I set the "src_product_id" to "100"
+    And I press the "Search" button
+    Then I should see "100" in the "src_product_id" field
+    And I should see "200" in the "rec_product_id" field
+    When I change "src_product_id" to "101"
+    And I press the "Update" button
+    Then I should see the message "Success"
+    When I copy the "Id" field
+    And I press the "Clear" button
+    And I paste the "Id" field
+    And I press the "Retrieve" button
+    Then I should see "101" in the "src_product_id" field
+    When I press the "Clear" button
+    And I press the "Search" button
+    Then I should see "101" in the results
+    Then I should not see "100" in the results
