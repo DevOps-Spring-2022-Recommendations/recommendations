@@ -42,3 +42,21 @@ Scenario: List all recommendations
     And I should see "201" in the results
     And I should see "101" in the results
     And I should not see "300" in the results
+    
+Scenario: Read one recommendation by id
+    When I visit the "Home Page"
+    And I press the "Search" button
+    Then I should see "100" in the results
+    And I should see "200" in the results
+    And I should see "201" in the results
+    And I should see "101" in the results
+    And I should not see "300" in the results
+    When I set the "Src Product ID" to "0"
+    And I set the "Rec Product ID" to "0"
+    And I select "Up Sell" in the "Type" dropdown
+    And I select "Enabled" in the "Status" dropdown
+    And I press the "Search" button
+    Then I should see "100" in the "Src Product ID" field
+    And I should see "200" in the "Rec Product ID" field
+    And I should see "Cross Sell" in the "Type" dropdown
+    And I should see "Enabled" in the "Status" dropdown
