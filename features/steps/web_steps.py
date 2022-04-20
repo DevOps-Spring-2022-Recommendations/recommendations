@@ -1,5 +1,5 @@
 import logging
-from behave import when, then
+from behave import when
 from compare import expect, ensure
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
