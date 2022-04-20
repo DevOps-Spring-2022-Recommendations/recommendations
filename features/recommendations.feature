@@ -80,27 +80,16 @@ Scenario: Update a recommendation
     Then I should see "102" in the results
     Then I should not see "100" in the results
     
-Scenario: Change a statu
+Scenario: Change a Statu
     When I visit the "Home Page"
     And I set the "Src Product ID" to "123"
     And I set the "Rec Product ID" to "321"
-
-Scenario: Delete a Recommendation
-    When I visit the "Home Page"
-    And I set the "Src Product ID" to "12"
-    And I set the "Rec Product ID" to "23"
     And I select "Cross Sell" in the "Type" dropdown
     And I select "Enabled" in the "Status" dropdown
     And I press the "Create" button
     Then I should see the message "Success"
     When I copy the "ID" field
     And I press the "Clear" button
-    Then the "ID" field should be empty
-    And the "Src Product ID" field should be empty
-    And the "Rec Product ID" field should be empty
-    When I paste the "ID" field
-    And I press the "Delete" button
-    Then I should see the message "Recommandation has been Deleted!"
     When I paste the "ID" field
     And I press the "Search" button
     Then I should see "Enabled" in the "Status" dropdown
@@ -118,6 +107,23 @@ Scenario: Delete a Recommendation
     And I press the "Search" button
     Then I should see "DISABLED" in the results
     Then I should not see "ENABLED" in the results
+
+Scenario: Delete a Recommendation
+    When I visit the "Home Page"
+    And I set the "Src Product ID" to "12"
+    And I set the "Rec Product ID" to "23"
+    And I select "Cross Sell" in the "Type" dropdown
+    And I select "Enabled" in the "Status" dropdown
+    And I press the "Create" button
+    Then I should see the message "Success"
+    When I copy the "ID" field
+    And I press the "Clear" button
+    Then the "ID" field should be empty
+    And the "Src Product ID" field should be empty
+    And the "Rec Product ID" field should be empty
+    When I paste the "ID" field
+    And I press the "Delete" button
+    Then I should see the message "Recommandation has been Deleted!"
     
 Scenario: Query recommendations by Src Id
     When I visit the "Home Page"
