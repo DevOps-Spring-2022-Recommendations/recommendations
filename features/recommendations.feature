@@ -92,7 +92,6 @@ Scenario: Change a statu
     
 Scenario: Query recommendations by Type
     When I visit the "Home Page"
-    When I visit the "Home Page"
     And I set the "Src Product ID" to "123"
     And I set the "Rec Product ID" to "321"
     And I select "Cross Sell" in the "Type" dropdown
