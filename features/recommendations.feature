@@ -55,19 +55,19 @@ Scenario: Change a statu
     And I press the "Clear" button
     When I paste the "ID" field
     And I press the "Search" button
-    Then I should see "Cross Sell" in the "Type" dropdown
-    When I change "Type" to "UP_SELL"
+    Then I should see "Enable" in the "Status" dropdown
+    When I change "Status" to "Disable"
     And I press the "Update" button
     Then I should see the message "Success"
     When I copy the "ID" field
     And I press the "Clear" button
     And I paste the "ID" field
     And I press the "Retrieve" button  
-    Then I should see "UP Sell" in the "Type" dropdown 
+    Then I should see "Disable" in the "Status" dropdown 
     When I press the "Clear" button
     And I press the "Search" button
-    Then I should see "UP SELL" in the results
-    Then I should not see "Cross Sell" in the results
+    Then I should see "Disable" in the results
+    Then I should not see "Enable" in the results
     
 Scenario: Query recommendations by Type
     When I visit the "Home Page"
