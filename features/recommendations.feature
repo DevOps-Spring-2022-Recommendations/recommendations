@@ -31,3 +31,40 @@ Scenario: Create a Recommendation
     And I should see "23" in the "Rec Product ID" field
     And I should see "Cross Sell" in the "Type" dropdown
     And I should see "Enabled" in the "Status" dropdown
+    
+Scenario: Change a statu
+    When I visit the "Home Page"
+    And I set the "Src Product ID" to "123"
+    And I set the "Rec Product ID" to "321"
+    And I select "Cross Sell" in the "Type" dropdown
+    And I select "Enabled" in the "Status" dropdown
+    And I press the "Create" button
+    Then I should see the message "Success"
+    When I copy the "ID" field
+    And I press the "Clear" button
+    When I paste the "ID" field
+    And I press the "Search" button
+    Then I should see "Cross Sell" in the "Type" dropdown
+    When I change "Type" to "UP_SELL"
+    And I press the "Update" button
+    Then I should see the message "Success"
+    When I copy the "ID" field
+    And I press the "Clear" button
+    And I paste the "ID" field
+    And I press the "Retrieve" button  
+    Then I should see "UP Sell" in the "Type" dropdown 
+    When I press the "Clear" button
+    And I press the "Search" button
+    Then I should see "UP SELL" in the results
+    Then I should not see "Cross Sell" in the results
+    
+Scenario: Query recommendations by Type
+    When I visit the "Home Page"
+    And I select "Cross Sell" in the "Type" dropdown
+    And I press the "Search" button
+    Then I should see "100" in the results
+    And I should see "200" in the results
+    And I should see "201" in the results
+    And I should see "101" in the results
+    And I should not see "300" in the results
+    
