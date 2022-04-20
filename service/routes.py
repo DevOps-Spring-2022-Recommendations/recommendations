@@ -6,7 +6,8 @@ The recommendations resource is a representation a product recommendation based 
 
 from flask import jsonify, request, url_for, abort, make_response
 from service.models import Recommendation, Status
-from . import app, status  # HTTP Status Codes
+from . import app
+from .utils import status
 from werkzeug.exceptions import NotFound
 
 ######################################################################

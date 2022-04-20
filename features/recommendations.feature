@@ -9,5 +9,25 @@ Background:
 
 Scenario: The server is running
     When I visit the "Home Page"
-    Then I should see "Recommendation Demo REST API Service"
+    Then I should see "Recommendation Demo RESTful Service" in the title
     And I should not see "404 Not Found"
+
+Scenario: Create a Recommendation
+    When I visit the "Home Page"
+    And I set the "Src Product ID" to "12"
+    And I set the "Rec Product ID" to "23"
+    And I select "Cross Sell" in the "Type" dropdown
+    And I select "Enabled" in the "Status" dropdown
+    And I press the "Create" button
+    Then I should see the message "Success"
+    When I copy the "ID" field
+    And I press the "Clear" button
+    Then the "ID" field should be empty
+    And the "Src Product ID" field should be empty
+    And the "Rec Product ID" field should be empty
+    When I paste the "ID" field
+    And I press the "Retrieve" button
+    Then I should see "12" in the "Src Product ID" field
+    And I should see "23" in the "Rec Product ID" field
+    And I should see "Cross Sell" in the "Type" dropdown
+    And I should see "Enabled" in the "Status" dropdown
