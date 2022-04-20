@@ -60,3 +60,22 @@ Scenario: Read one recommendation by id
     And I should see "200" in the "Rec Product ID" field
     And I should see "Cross Sell" in the "Type" dropdown
     And I should see "Enabled" in the "Status" dropdown
+
+Scenario: Update a recommendation
+    When I visit the "Home Page"
+    And I set the "src_product_id" to "100"
+    And I press the "Search" button
+    Then I should see "100" in the "src_product_id" field
+    And I should see "200" in the "rec_product_id" field
+    When I change "src_product_id" to "102"
+    And I press the "Update" button
+    Then I should see the message "Success"
+    When I copy the "Id" field
+    And I press the "Clear" button
+    And I paste the "Id" field
+    And I press the "Retrieve" button
+    Then I should see "102" in the "src_product_id" field
+    When I press the "Clear" button
+    And I press the "Search" button
+    Then I should see "102" in the results
+    Then I should not see "100" in the results
