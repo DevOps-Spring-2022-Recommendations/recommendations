@@ -8,7 +8,7 @@ Test cases can be run with the following:
 import os
 import logging
 from unittest import TestCase
-from service import status  # HTTP Status Codes
+from service.utils import status  # HTTP Status Codes
 from service.models import db
 from service.routes import app, init_db
 from .factories import RecommendationFactory

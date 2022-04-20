@@ -6,16 +6,16 @@ $(function () {
 
     // Updates the form with data from the response
     function update_form_data(res) {
-        // let type = $("#r_type").val();
-        // let status = $("#r_status").val();
-        // let src_product_id = parseInt($("#sourceid").val());
-        // let rec_product_id = parseInt($("#targetid").val());
+        // let type = $("#type").val();
+        // let status = $("#status").val();
+        // let src_product_id = parseInt($("#src_product_id").val());
+        // let rec_product_id = parseInt($("#rec_product_id").val());
         
-        $("#pet_id").val(res.id);
-        $("#r_type").val(res.type);
-        $("#r_status").val(res.status);
-        $("#targetid").val(res.rec_product_id);
-        $("#sourceid").val(res.src_product_id);
+        $("#id").val(res.id);
+        $("#type").val(res.type);
+        $("#status").val(res.status);
+        $("#rec_product_id").val(res.rec_product_id);
+        $("#src_product_id").val(res.src_product_id);
         // $("#pet_name").val(res.name);
         // $("#pet_category").val(res.category);
         // if (res.available == true) {
@@ -29,11 +29,11 @@ $(function () {
 
     /// Clears all form fields
     function clear_form_data() {
-        $("#pet_id").val("");
-        $("#r_type").val("");
-        $("#r_status").val("");
-        $("#targetid").val("");
-        $("#sourceid").val("");
+        $("#id").val("");
+        $("#type").val("");
+        $("#status").val("");
+        $("#rec_product_id").val("");
+        $("#src_product_id").val("");
     }
 
     // Updates the flash message area
@@ -48,10 +48,10 @@ $(function () {
 
     $("#create-btn").click(function () {
 
-        let type = $("#r_type").val();
-        let status = $("#r_status").val();
-        let src_product_id = parseInt($("#sourceid").val());
-        let rec_product_id = parseInt($("#targetid").val());
+        let type = $("#type").val();
+        let status = $("#status").val();
+        let src_product_id = parseInt($("#src_product_id").val());
+        let rec_product_id = parseInt($("#rec_product_id").val());
     
 
         let data = {
@@ -90,11 +90,11 @@ $(function () {
 
     $("#update-btn").click(function () {
 
-        let pet_id = $("#pet_id").val();
-        let type = $("#r_type").val();
-        let status = $("#r_status").val();
-        let src_product_id = parseInt($("#sourceid").val());
-        let rec_product_id = parseInt($("#targetid").val());
+        let id = $("#id").val();
+        let type = $("#type").val();
+        let status = $("#status").val();
+        let src_product_id = parseInt($("#src_product_id").val());
+        let rec_product_id = parseInt($("#rec_product_id").val());
 
         let data = {
             
@@ -108,7 +108,7 @@ $(function () {
 
         let ajax = $.ajax({
                 type: "PUT",
-                url: `/recommendations/${pet_id}`,
+                url: `/recommendations/${id}`,
                 contentType: "application/json",
                 data: JSON.stringify(data)
             })
@@ -130,13 +130,13 @@ $(function () {
 
     $("#retrieve-btn").click(function () {
 
-        let pet_id = $("#pet_id").val();
+        let id = $("#id").val();
 
         $("#flash_message").empty();
 
         let ajax = $.ajax({
             type: "GET",
-            url: `/recommendations/${pet_id}`,
+            url: `/recommendations/${id}`,
             contentType: "application/json",
             data: ''
         })
@@ -160,13 +160,13 @@ $(function () {
 
     $("#delete-btn").click(function () {
 
-        let pet_id = $("#pet_id").val();
+        let id = $("#id").val();
 
         $("#flash_message").empty();
 
         let ajax = $.ajax({
             type: "DELETE",
-            url: `/recommendations/${pet_id}`,
+            url: `/recommendations/${id}`,
             contentType: "application/json",
             data: '',
         })
@@ -186,7 +186,7 @@ $(function () {
     // ****************************************
 
     $("#clear-btn").click(function () {
-        $("#pet_id").val("");
+        $("#id").val("");
         $("#flash_message").empty();
         clear_form_data()
     });
@@ -220,11 +220,11 @@ $(function () {
         //         queryString += 'available=' + available
         //     }
         // }
-        let pet_id = $("#pet_id").val();
-        let type = $("#r_type").val();
-        let status = $("#r_status").val();
-        let src_product_id = parseInt($("#sourceid").val());
-        let rec_product_id = parseInt($("#targetid").val());
+        let id = $("#id").val();
+        let type = $("#type").val();
+        let status = $("#status").val();
+        let src_product_id = parseInt($("#src_product_id").val());
+        let rec_product_id = parseInt($("#rec_product_id").val());
         // let name = $("#pet_name").val();
         // let category = $("#pet_category").val();
         // let available = $("#pet_available").val() == "true";
