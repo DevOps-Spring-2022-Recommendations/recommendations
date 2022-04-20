@@ -6,6 +6,8 @@ Feature: The Recomendation store service back-end
 Background:
     Given the following recommendations
         | src_product_id    | rec_product_id    | type          | status    |
+        | 100    | 200    | CROSS_SELL          | ENABLED    |
+        | 101    | 201    | CROSS_SELL          | DISABLED    |
 
 Scenario: The server is running
     When I visit the "Home Page"
@@ -31,3 +33,12 @@ Scenario: Create a Recommendation
     And I should see "23" in the "Rec Product ID" field
     And I should see "Cross Sell" in the "Type" dropdown
     And I should see "Enabled" in the "Status" dropdown
+
+Scenario: List all recommendations
+    When I visit the "Home Page"
+    And I press the "Search" button
+    Then I should see "100" in the results
+    And I should see "200" in the results
+    And I should see "201" in the results
+    And I should see "101" in the results
+    And I should not see "300" in the results
