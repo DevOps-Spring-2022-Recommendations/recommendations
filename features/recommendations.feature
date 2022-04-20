@@ -106,7 +106,6 @@ Scenario: Change a Statu
     And I paste the "ID" field
     And I press the "Search" button
     Then I should see "DISABLED" in the results
-    Then I should not see "ENABLED" in the results
 
 Scenario: Delete a Recommendation
     When I visit the "Home Page"
