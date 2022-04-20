@@ -79,3 +79,47 @@ Scenario: Update a recommendation
     And I press the "Search" button
     Then I should see "102" in the results
     Then I should not see "100" in the results
+    
+Scenario: Change a statu
+    When I visit the "Home Page"
+    And I set the "Src Product ID" to "123"
+    And I set the "Rec Product ID" to "321"
+    And I select "Cross Sell" in the "Type" dropdown
+    And I select "Enabled" in the "Status" dropdown
+    And I press the "Create" button
+    Then I should see the message "Success"
+    When I copy the "ID" field
+    And I press the "Clear" button
+    When I paste the "ID" field
+    And I press the "Search" button
+    Then I should see "Enabled" in the "Status" dropdown
+    When I select "Disabled" in the "Status" dropdown
+    And I press the "Update" button
+    Then I should see the message "Success"
+    When I copy the "ID" field
+    And I press the "Clear" button
+    And I paste the "ID" field
+    And I press the "Retrieve" button  
+    Then I should see "Disabled" in the "Status" dropdown 
+    When I copy the "ID" field
+    And I press the "Clear" button
+    And I paste the "ID" field
+    And I press the "Search" button
+    Then I should see "DISABLED" in the results
+    Then I should not see "ENABLED" in the results
+    
+Scenario: Query recommendations by Src Id
+    When I visit the "Home Page"
+    And I set the "Src Product ID" to "123"
+    And I set the "Rec Product ID" to "321"
+    And I select "Cross Sell" in the "Type" dropdown
+    And I select "Enabled" in the "Status" dropdown
+    And I press the "Create" button
+    Then I should see the message "Success"
+    When I press the "Clear" button
+    And I set the "Src Product ID" to "123"
+    And I press the "Search" button
+    Then I should see "123" in the results
+    And I should see "321" in the results
+    And I should not see "886" in the results
+    
