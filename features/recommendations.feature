@@ -100,8 +100,7 @@ Scenario: Query recommendations by Type
     And I press the "Create" button
     Then I should see the message "Success"
     When I press the "Clear" button
-    And I select "Cross Sell" in the "Type" dropdown
-    And I select "Enabled" in the "Status" dropdown
+    And I set the "Src Product ID" to "123"
     And I press the "Search" button
     Then I should see "123" in the results
     And I should see "321" in the results
