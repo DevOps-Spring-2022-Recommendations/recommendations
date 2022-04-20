@@ -90,7 +90,7 @@ Scenario: Change a statu
     Then I should see "DISABLED" in the results
     Then I should not see "ENABLED" in the results
     
-Scenario: Query recommendations by Type
+Scenario: Query recommendations by Src Id
     When I visit the "Home Page"
     And I set the "Src Product ID" to "123"
     And I set the "Rec Product ID" to "321"
