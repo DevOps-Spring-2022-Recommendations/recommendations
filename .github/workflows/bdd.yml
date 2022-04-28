@@ -49,14 +49,7 @@ jobs:
           python -m pip install --upgrade pip wheel
           pip install -r requirements.txt
 
-      - name: Run the server locally
-        run: |
-          echo "\n*** STARTING APPLICATION ***\n"
-          honcho start &
-          sleep 5
-          curl -I http://localhost:8000/
-          echo "\n*** SERVER IS RUNNING ***"
-
       - name: Run unit tests with behave
         run: behave
-  
+        env:
+          DATABASE_URI: "postgresql://postgres:postgres@postgres:5432/testdb"
