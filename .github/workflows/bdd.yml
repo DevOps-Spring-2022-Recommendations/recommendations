@@ -5,6 +5,8 @@ on:
     paths-ignore:
       - '**.md'
   pull_request:
+    branches:
+      - master
     paths-ignore:
       - '**.md'
 
@@ -50,10 +52,10 @@ jobs:
       - name: Run the server locally
         run: |
           echo "\n*** STARTING APPLICATION ***\n"
-          honcho start
+          honcho start &
+          sleep 5
+          curl -I http://localhost:8000/
           echo "\n*** SERVER IS RUNNING ***"
-        env:
-          DATABASE_URI: "postgresql://postgres:postgres@postgres:5432/testdb"
 
       - name: Run unit tests with behave
         run: behave
