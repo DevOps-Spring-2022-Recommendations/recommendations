@@ -5,10 +5,20 @@ The recommendations resource is a representation a product recommendation based 
 """
 
 from flask import jsonify, request, url_for, abort, make_response
-from service.models import Recommendation, Status
+from service.models import Recommendation, Status, Type, DataValidationError, DatabaseConnectionError
 from . import app
 from .utils import status
 from werkzeug.exceptions import NotFound
+from flask_restx import Api, Resource, fields, reqparse, inputs
+
+# Document the type of autorization required
+authorizations = {
+    'apikey': {
+        'type': 'apiKey',
+        'in': 'header',
+        'name': 'X-Api-Key'
+    }
+}
 
 ######################################################################
 # GET INDEX
@@ -17,7 +27,48 @@ from werkzeug.exceptions import NotFound
 def index():
     """Base URL for our service"""
     return app.send_static_file("index.html")
-    
+
+######################################################################
+# Configure Swagger before initializing it
+######################################################################
+api = Api(app,
+          version='1.0.0',
+          title='Recommendation Demo REST API Service',
+          description='This is a sample server Recommendation store server.',
+          default='recommendations',
+          default_label='Recommendation shop operations',
+          doc='/apidocs', # default also could use doc='/apidocs/'
+          authorizations=authorizations,
+          prefix='/api'
+         )
+
+# Define the model so that the docs reflect what can be sent
+create_model = api.model('Recommendation', {
+    'id': fields.Integer(required=True,
+                          description='The id of the recommendation'),
+    'src_product_id': fields.Integer(required=True,
+                              description='The source ID of recommendation'),
+    'rec_product_id': fields.Integer(required=True,
+                              description='The target ID of recommendation'),
+    'type': fields.String(enum=Type._member_names_, description='The type of the recommendation'),
+    'status': fields.String(enum=Status._member_names_, description='The status of the recommendation')
+})
+
+recommendation_model = api.inherit(
+    'RecommendationModel', 
+    create_model,
+    {
+        '_id': fields.String(readOnly=True,
+                            description='The unique id assigned internally by service'),
+    }
+)
+
+
+# query string arguments
+recommendation_args = reqparse.RequestParser()
+recommendation_args.add_argument('src_product_id', type=int, required=False, help='List Recommendations by source ID')
+
+
 ######################################################################
 # LIST ALL RECOMMENDATIONS
 ######################################################################
@@ -34,6 +85,159 @@ def list_recommendations():
     results = [recommendation.serialize() for recommendation in recommendations]
     app.logger.info("Returning %d recommendations", len(results))
     return make_response(jsonify(results), status.HTTP_200_OK)
+
+######################################################################
+# Special Error Handlers
+######################################################################
+@api.errorhandler(DataValidationError)
+def request_validation_error(error):
+    """ Handles Value Errors from bad data """
+    message = str(error)
+    app.logger.error(message)
+    return {
+        'status_code': status.HTTP_400_BAD_REQUEST,
+        'error': 'Bad Request',
+        'message': message
+    }, status.HTTP_400_BAD_REQUEST
+
+@api.errorhandler(DatabaseConnectionError)
+def database_connection_error(error):
+    """ Handles Database Errors from connection attempts """
+    message = str(error)
+    app.logger.critical(message)
+    return {
+        'status_code': status.HTTP_503_SERVICE_UNAVAILABLE,
+        'error': 'Service Unavailable',
+        'message': message
+    }, status.HTTP_503_SERVICE_UNAVAILABLE
+
+
+######################################################################
+#  PATH: /recommendations/{id}
+######################################################################
+@api.route('/recommendations/<recommendation_id>')
+@api.param('recommendation_id', 'The recommendation identifier')
+class RecommendationResource(Resource):
+    """
+    RecommendationResource class
+
+    Allows the manipulation of a single recommendation
+    GET /recommendation{id} - Returns a recommendation with the id
+    PUT /recommendation{id} - Update a recommendation with the id
+    DELETE /recommendation{id} -  Deletes a recommendation with the id
+    """
+
+    #------------------------------------------------------------------
+    # RETRIEVE A RECOMMENDATION
+    #------------------------------------------------------------------
+    @api.doc('get_recommendations')
+    @api.response(404, 'recommendation not found')
+    @api.marshal_with(recommendation_model)
+    def get(self, recommendation_id):
+        """
+        Retrieve a single recommendation
+
+        This endpoint will return a Recommendation based on it's id
+        """
+        app.logger.info("Request to Retrieve a recommendation with id [%s]", recommendation_id)
+        recommendation = Recommendation.find(recommendation_id)
+        if not recommendation:
+            abort(status.HTTP_404_NOT_FOUND, "Recommendation with id '{}' was not found.".format(recommendation_id))
+        return recommendation.serialize(), status.HTTP_200_OK
+
+    #------------------------------------------------------------------
+    # UPDATE AN EXISTING RECOMMENDATION
+    #------------------------------------------------------------------
+    @api.doc('update_Recommendations')
+    @api.response(404, 'Recommendation not found')
+    @api.response(400, 'The posted Recommendation data was not valid')
+    @api.expect(recommendation_model)
+    @api.marshal_with(recommendation_model)
+    def put(self, recommendation_id):
+        """
+        Update a Recommendation
+
+        This endpoint will update a Recommendation based the body that is posted
+        """
+        app.logger.info('Request to Update a recommendation with id [%s]', recommendation_id)
+        recommendation = Recommendation.find(recommendation_id)
+        if not recommendation:
+            abort(status.HTTP_404_NOT_FOUND, "Recommendation with id '{}' was not found.".format(recommendation_id))
+        app.logger.debug('Payload = %s', api.payload)
+        data = api.payload
+        recommendation.deserialize(data)
+        recommendation.id = recommendation_id
+        recommendation.update()
+        return recommendation.serialize(), status.HTTP_200_OK
+
+    #------------------------------------------------------------------
+    # DELETE A RECOMMENDATION
+    #------------------------------------------------------------------
+    @api.doc('delete_recommendations', security='apikey')
+    @api.response(204, 'Recommendation deleted')
+    def delete(self, recommendation_id):
+        """
+        Delete a Recommendation
+
+        This endpoint will delete a recommendation based the id specified in the path
+        """
+        app.logger.info('Request to Delete a Recommendation with id [%s]', recommendation_id)
+        recommendation = Recommendation.find(recommendation_id)
+        if recommendation:
+            recommendation.delete()
+            app.logger.info('Recommendation with id [%s] was deleted', recommendation_id)
+
+        return '', status.HTTP_204_NO_CONTENT
+
+######################################################################
+#  PATH: /recommendations
+######################################################################
+@api.route('/recommendations', strict_slashes=False)
+class RecommendationCollection(Resource):
+    """ Handles all interactions with collections of Recommendations """
+    #------------------------------------------------------------------
+    # LIST ALL RECOMMENDATIONS
+    #------------------------------------------------------------------
+    @api.doc('list_recommendations')
+    @api.expect(recommendation_args, validate=True)
+    @api.marshal_list_with(recommendation_model)
+    def get(self):
+        """ Returns all of the Recommendations """
+        app.logger.info('Request to list Recommendations...')
+        recommendations = []
+        args = recommendation_args.parse_args()
+        if args['src_product_id']:
+            app.logger.info('Filtering by Source ID: %s', args['src_product_id'])
+            recommendations = Recommendation.find_by_src_id(int(args['src_product_id']))
+        else:
+            app.logger.info('Returning unfiltered list.')
+            recommendations = Recommendation.all()
+
+        app.logger.info('[%s] Recommendations returned', len(recommendations))
+        results = [recommendation.serialize() for recommendation in recommendations]
+        return results, status.HTTP_200_OK
+
+
+    #------------------------------------------------------------------
+    # ADD A NEW RECOMMENDATION
+    #------------------------------------------------------------------
+    @api.doc('create_recommendations')
+    @api.response(400, 'The posted data was not valid')
+    @api.expect(create_model)
+    @api.marshal_with(recommendation_model, code=201)
+    def post(self):
+        """
+        Creates a Recommendation
+        This endpoint will create a Recommendation based the data in the body that is posted
+        """
+        app.logger.info('Request to Create a Recommendation')
+        recommendation = Recommendation()
+        app.logger.debug('Payload = %s', api.payload)
+        recommendation.deserialize(api.payload)
+        recommendation.create()
+        app.logger.info('Pet with new id [%s] created!', recommendation.id)
+        location_url = api.url_for(RecommendationResource, recommendation_id=recommendation.id, _external=True)
+        return recommendation.serialize(), status.HTTP_201_CREATED, {'Location': location_url}
 
 
 
