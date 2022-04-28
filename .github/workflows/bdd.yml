@@ -57,6 +57,7 @@ jobs:
           echo "\n*** SERVER IS RUNNING ***"
         env:
           DATABASE_URI: "postgresql://postgres:postgres@postgres:5432/testdb"
+          PORT: 8000
 
       - name: Run unit tests with behave
         run: behave
