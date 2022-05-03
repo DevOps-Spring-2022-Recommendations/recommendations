@@ -36,7 +36,7 @@ def database_connection_error(error):
         jsonify(
             status=status.HTTP_503_SERVICE_UNAVAILABLE,
             error="Service Unavailable",
-            message=message,
+            message=str(error),
         ),
         status.HTTP_503_SERVICE_UNAVAILABLE,
     )
