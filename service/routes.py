@@ -228,7 +228,7 @@ class RecommendationCollection(Resource):
             app.logger.info('Returning unfiltered list.')
             recommendations = Recommendation.all()
 
-        app.logger.info('[%s] Recommendations returned', len(recommendations))
+        # app.logger.info('[%s] Recommendations returned', len(recommendations))
         results = [recommendation.serialize() for recommendation in recommendations]
         return results, status.HTTP_200_OK
 

@@ -31,13 +31,12 @@ from . import status
 @app.errorhandler(DatabaseConnectionError)
 def database_connection_error(error):
     """Handles Errors from no database connection"""
-    message = str(error)
-    app.logger.error(message)
+    app.logger.error(str(error))
     return make_response(
         jsonify(
             status=status.HTTP_503_SERVICE_UNAVAILABLE,
             error="Service Unavailable",
-            message=message,
+            message=str(error),
         ),
         status.HTTP_503_SERVICE_UNAVAILABLE,
     )
