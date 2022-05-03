@@ -269,6 +269,7 @@ class TestRecommendationServer(TestCase):
         """Query Recommendations by Type"""
         recommendations = self._create_recommendations(5)
         test_type = recommendations[0].type
+        test_source_id = recommendations[0].src_product_id
         type_count = len([recommendation for recommendation in recommendations
             if recommendation.type == test_type])
         resp = self.app.get(
@@ -277,9 +278,7 @@ class TestRecommendationServer(TestCase):
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         data = resp.get_json()
         self.assertEqual(len(data), type_count)
-        # check the data just to be sure
-        for reco in data:
-            self.assertEqual(reco["src_product_id"], test_source_id)
+
     def get_rec(self):
         """ retrieves a Recommendation for use in other actions """
         recommendations = self._create_recommendations(10)
@@ -367,6 +366,4 @@ class TestRecommendationServer(TestCase):
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         enabled = resp.get_json()
         self.assertEqual(enabled["status"], "ENABLED")
-        for recommendation in data:
-            self.assertEqual(recommendation["type"], test_type.name)
 
