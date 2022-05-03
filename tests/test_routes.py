@@ -19,7 +19,7 @@ DATABASE_URI = os.getenv(
 )
 BASE_URL = "/recommendations"
 CONTENT_TYPE_JSON = "application/json"
-
+BASE_API="/api/recommendations"
 ######################################################################
 #  T E S T   C A S E S
 ######################################################################
@@ -58,6 +58,21 @@ class TestRecommendationServer(TestCase):
             test_recommendation = RecommendationFactory()
             resp = self.app.post(
                 BASE_URL, json=test_recommendation.serialize(), content_type=CONTENT_TYPE_JSON
+            )
+            self.assertEqual(
+                resp.status_code, status.HTTP_201_CREATED, "Could not create test recommendation"
+            )
+            new_recommendation = resp.get_json()
+            test_recommendation.id = new_recommendation["id"]
+            recommendations.append(test_recommendation)
+        return recommendations
+    def _create_recommendations_API(self, count):
+        """Factory method to create items in bulk"""
+        recommendations = []
+        for _ in range(count):
+            test_recommendation = RecommendationFactory()
+            resp = self.app.post(
+                BASE_API, json=test_recommendation.serialize(), content_type=CONTENT_TYPE_JSON
             )
             self.assertEqual(
                 resp.status_code, status.HTTP_201_CREATED, "Could not create test recommendation"
@@ -254,6 +269,7 @@ class TestRecommendationServer(TestCase):
         """Query Recommendations by Type"""
         recommendations = self._create_recommendations(5)
         test_type = recommendations[0].type
+        test_source_id = recommendations[0].src_product_id
         type_count = len([recommendation for recommendation in recommendations
             if recommendation.type == test_type])
         resp = self.app.get(
@@ -262,6 +278,92 @@ class TestRecommendationServer(TestCase):
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         data = resp.get_json()
         self.assertEqual(len(data), type_count)
+
+    def get_rec(self):
+        """ retrieves a Recommendation for use in other actions """
+        recommendations = self._create_recommendations(10)
+        test_source_id = recommendations[0].id
+        resp = self.app.get(BASE_URL,
+                            query_string="id={}".format(test_source_id))
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        self.assertGreater(len(resp.data), 0)
+        data = resp.get_json()
+        logging.debug('get_pet(data) = %s', data)
+        return data
+
+    def test_update_api(self):
+        """ Update a recommandation """
+        pet = self.get_rec()[0] # returns a list
+        self.assertEqual(pet['id'], 1)
+        pet['rec_product_id'] = 595
+        id=pet['id']
+        # make the call
+        pet_id = pet['id']
+        resp = self.app.put(f'{BASE_API}/{id}', json=pet,
+                            
+            content_type=CONTENT_TYPE_JSON)
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+
+    def test_get_recommendations_list_API(self):
+        """Get a list of recommendations"""
+        self._create_recommendations(5)
+        resp = self.app.get(BASE_API)
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        data = resp.get_json()
+        self.assertEqual(len(data), 5)
+
+    def test_delete_recommendation_api(self):
+        """Delete a recommendation"""
+        test_recommendation = self._create_recommendations_API(1)[0]
+        resp = self.app.delete(
+            "{0}/{1}".format(BASE_API, test_recommendation.id), content_type=CONTENT_TYPE_JSON
+        )
+        self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(len(resp.data), 0)
+        # make sure they are deleted
+        resp = self.app.get(
+            "{0}/{1}".format(BASE_API, test_recommendation.id), content_type=CONTENT_TYPE_JSON
+        )
+        self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
+    
+    def test_query_recommendations_by_source_API(self):
+        """Query Recommendations by Source ID"""
+        recommendations = self._create_recommendations(10)
+        test_source_id = recommendations[0].src_product_id
+        source_id_recos = [reco for reco in recommendations if reco.src_product_id == test_source_id]
+        resp = self.app.get(
+            BASE_API, query_string="src_product_id={}".format(test_source_id)
+        )
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        data = resp.get_json()
+        self.assertEqual(len(data), len(source_id_recos))
         # check the data just to be sure
-        for recommendation in data:
-            self.assertEqual(recommendation["type"], test_type.name)
+        for reco in data:
+            self.assertEqual(reco["src_product_id"], test_source_id)
+
+    def test_enable_recommendations_API(self):
+        """Enable a recommendation"""
+        # test recommendation not found
+        resp = self.app.put("/recommendations/1/enable",
+            json=None,
+            content_type=CONTENT_TYPE_JSON,
+        )
+        self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
+
+        # create a recommendation to test
+        test_recommendation = RecommendationFactory()
+        resp = self.app.post(
+            BASE_API, json=test_recommendation.serialize(), content_type=CONTENT_TYPE_JSON
+        )
+        self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
+
+        recommendation = resp.get_json()
+        logging.debug(recommendation)
+        resp = self.app.put("/recommendations/{}/enable".format(recommendation["id"]),
+            json=recommendation,
+            content_type=CONTENT_TYPE_JSON,
+        )
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        enabled = resp.get_json()
+        self.assertEqual(enabled["status"], "ENABLED")
+

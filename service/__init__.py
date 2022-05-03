@@ -38,8 +38,8 @@ app.logger.info(70 * "*")
 try:
     routes.init_db()  # make our sqlalchemy tables
 except Exception as error:
-    app.logger.critical("%s: Cannot continue", error)
-    # gunicorn requires exit code 4 to stop spawning workers when they die
     sys.exit(4)
+    # app.logger.critical("%s: Cannot continue", error)
+    # sys.exit(4)
 
 app.logger.info("Service initialized!")
