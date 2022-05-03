@@ -94,6 +94,7 @@ def create_recommendations():
 ######################################################################
 # UPDATE AN EXISTING RECOMMENDATION
 ######################################################################
+
 @app.route("/recommendations/<int:item_id>", methods=["PUT"])
 def update_recommendations(item_id):
     """

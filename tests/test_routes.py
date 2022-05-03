@@ -163,8 +163,7 @@ class TestRecommendationServer(TestCase):
         """Get a list of recommendations"""
         self._create_recommendations(5)
         resp = self.app.get(BASE_URL)
-        self.assertEqual(resp.status_code, 
-            status.HTTP_200_OK)
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
         self.assertTrue(len(resp.data) > 0)
 
     def test_enable_recommendations(self):
