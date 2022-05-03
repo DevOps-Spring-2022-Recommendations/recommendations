@@ -6,25 +6,11 @@ $(function () {
 
     // Updates the form with data from the response
     function update_form_data(res) {
-        // let type = $("#type").val();
-        // let status = $("#status").val();
-        // let src_product_id = parseInt($("#src_product_id").val());
-        // let rec_product_id = parseInt($("#rec_product_id").val());
-        
         $("#id").val(res.id);
         $("#type").val(res.type);
         $("#status").val(res.status);
         $("#rec_product_id").val(res.rec_product_id);
         $("#src_product_id").val(res.src_product_id);
-        // $("#pet_name").val(res.name);
-        // $("#pet_category").val(res.category);
-        // if (res.available == true) {
-        //     $("#pet_available").val("true");
-        // } else {
-        //     $("#pet_available").val("false");
-        // }
-        // $("#pet_gender").val(res.gender);
-        // $("#pet_birthday").val(res.birthday);
     }
 
     /// Clears all form fields
@@ -79,7 +65,6 @@ $(function () {
         ajax.fail(function(res){
             flash_message(res.responseJSON.message)
             flash_message("error")
-            // flash_message(src_product_id)
         });
     });
 
@@ -173,7 +158,7 @@ $(function () {
 
         ajax.done(function(res){
             clear_form_data()
-            flash_message("Recommandation has been Deleted!")
+            flash_message("Recommendation has been Deleted!")
         });
 
         ajax.fail(function(res){
@@ -196,64 +181,39 @@ $(function () {
     // ****************************************
 
     $("#search-btn").click(function () {
-      
-        // let name = $("#pet_name").val();
-        // let category = $("#pet_category").val();
-        // let available = $("#pet_available").val() == "true";
+
+        let src_product_id = parseInt($("#src_product_id").val());
+        let rec_product_id = parseInt($("#rec_product_id").val());
+        let type = $("#type").val();
+        let status = $("#status").val();
 
         let queryString = "";
 
-        // if (name) {
-        //     queryString += 'name=' + name
-        // }
-        // if (category) {
-        //     if (queryString.length > 0) {
-        //         queryString += '&category=' + category
-        //     } else {
-        //         queryString += 'category=' + category
-        //     }
-        // }
-        // if (available) {
-            // if (queryString.length > 0) {
-            //     queryString += '&available=' + available
-            // } else {
-        //         queryString += 'available=' + available
-        //     }
-        // }
-        let id = $("#id").val();
-        let type = $("#type").val();
-        let status = $("#status").val();
-        let src_product_id = parseInt($("#src_product_id").val());
-        let rec_product_id = parseInt($("#rec_product_id").val());
-        // let name = $("#pet_name").val();
-        // let category = $("#pet_category").val();
-        // let available = $("#pet_available").val() == "true";
-
-        
-
-        // if (type) {
-        //     queryString += 'type=' + type
-        // }
-        // if (status) {
-           
-        //         queryString += 'category=' + category
-           
-        // }
         if (src_product_id) {
-           
-            if (queryString.length > 0) {
-                queryString += '&src_product_id=' + src_product_id
-            } else {queryString += 'src_product_id=' + src_product_id}
-       
+            queryString += 'src_product_id=' + src_product_id
         }   
-        // if (rec_product_id) {
-        //     if (queryString.length > 0) {
-        //         queryString += '&rec_product_id=' + rec_product_id
-        //     } else {
-        //     queryString += 'rec_product_id=' + rec_product_id
-        //     }
-   
-        // }
+        if (rec_product_id) {
+            if (queryString.length > 0) {
+                queryString += '&rec_product_id=' + rec_product_id
+            } else {
+                queryString += 'rec_product_id=' + rec_product_id
+            }
+        }
+        if (type) {
+            if (queryString.length > 0) {
+                queryString += '&type=' + type
+            } else {
+                queryString += 'type=' + type
+            }
+        }
+        if (status) {
+            if (queryString.length > 0) {
+                queryString += '&status=' + status
+            } else {
+                queryString += 'status=' + status
+            }
+        }
+
         $("#flash_message").empty();
 
         let ajax = $.ajax({
