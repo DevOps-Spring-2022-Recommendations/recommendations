@@ -174,6 +174,16 @@ class Recommendation(db.Model):
         :rtype: list
         """
         return cls.query.filter(cls.src_product_id == source_id)
+    
+    @classmethod
+    def find_by_rec_id(cls, rec_id : int):
+        """Returns all Recommendations by recommendation product id
+        :param id: the id of the source product to find
+        :type id: int
+        :return: list of Recommendations
+        :rtype: list
+        """
+        return cls.query.filter(cls.rec_product_id == rec_id)
 
     @classmethod
     def init_db(cls, app: Flask):
