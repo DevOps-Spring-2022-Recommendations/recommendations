@@ -25,18 +25,29 @@ def index():
 @app.route("/recommendations", methods=["GET"])
 def list_recommendations():
     """Returns all of the recommendation"""
+    app.logger.info("Request to list Recommendations...")
+
     recommendations = []
     src_product_id = request.args.get("src_product_id")
+    rec_product_id = request.args.get("rec_product_id")
+    type = request.args.get("type")
+
     if src_product_id:
+        app.logger.info("Find by source product id: %s", src_product_id)
         recommendations = Recommendation.find_by_src_id(int(src_product_id))
+    elif rec_product_id:
+        app.logger.info("Find by recommendation product id: %s", rec_product_id)
+        recommendations = Recommendation.find_by_rec_id(int(rec_product_id))
+    elif type:
+        app.logger.info("Find by type: %s", type)
+        recommendations = Recommendation.find_by_type(type)
     else:
+        app.logger.info("Find all")
         recommendations = Recommendation.all()
+
     results = [recommendation.serialize() for recommendation in recommendations]
     app.logger.info("Returning %d recommendations", len(results))
     return make_response(jsonify(results), status.HTTP_200_OK)
-
-
-
 
 ######################################################################
 # RETRIEVE A RECOMMENDATION BY ID
@@ -104,6 +115,7 @@ def update_recommendations(item_id):
 ######################################################################
 # DELETE A RECOMMENDATION
 ######################################################################
+
 @app.route("/recommendations/<int:item_id>", methods=["DELETE"])
 def delete_recommendations(item_id):
     """
@@ -121,6 +133,7 @@ def delete_recommendations(item_id):
 ######################################################################
 # ACTION: ENABLE AND DISABLE A RECOMMENDATION
 ######################################################################
+
 @app.route("/recommendations/<int:id>/enable", methods=["PUT"])
 def enable_recommendations(id):
     """
