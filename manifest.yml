@@ -16,3 +16,4 @@ applications:
   env:
     FLASK_APP : service:app
     FLASK_DEBUG : false
+    BASE_URL: https://nyu-recommendation-service-sp2203.us-south.cf.appdomain.cloud
