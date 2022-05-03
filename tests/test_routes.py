@@ -234,6 +234,22 @@ class TestRecommendationServer(TestCase):
         for recommendation in data:
             self.assertEqual(recommendation["src_product_id"], test_source_id)
 
+    def test_query_by_rec_product_id(self):
+        """Query Recommendations by Recommendation Product ID"""
+        recommendations = self._create_recommendations(10)
+        test_rec_id = recommendations[0].rec_product_id
+        rec_id_recommendations = [recommendation for recommendation in recommendations
+            if recommendation.rec_product_id == test_rec_id]
+        resp = self.app.get(
+            BASE_URL, query_string="rec_product_id={}".format(test_rec_id)
+        )
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        data = resp.get_json()
+        self.assertEqual(len(data), len(rec_id_recommendations))
+        # check the data just to be sure
+        for recommendation in data:
+            self.assertEqual(recommendation["rec_product_id"], test_rec_id)
+
     def test_query_by_type(self):
         """Query Recommendations by Type"""
         recommendations = self._create_recommendations(5)

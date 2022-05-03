@@ -223,7 +223,15 @@ class TestRecommendationModel(unittest.TestCase):
         self.assertEqual(pets[0].src_product_id, 100)
         self.assertEqual(pets[0].rec_product_id, 200)
         
-        
+    def test_find_by_rec_product_id(self):
+        """Find Recommendations by Recommendation product ID"""
+        Recommendation(src_product_id=100, rec_product_id=200, type="UP_SELL", status="ENABLED").create()
+        Recommendation(src_product_id=100, rec_product_id=201, type="CROSS_SELL", status="DISABLED").create()
+        recommendations = Recommendation.find_by_rec_id(201)
+        self.assertEqual(recommendations[0].rec_product_id, 201)
+        self.assertEqual(recommendations[0].src_product_id, 100)
+        self.assertEqual(recommendations[0].type, Type.CROSS_SELL)
+        self.assertEqual(recommendations[0].status, Status.DISABLED)
         
     def test_find_or_404_not_found(self):
         """Find or return 404 NOT found"""
